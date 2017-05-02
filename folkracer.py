@@ -1,3 +1,4 @@
 class Folkracer(object):
-    def test(self):
-        return 'Foo!'
+    def __init__(self,steering):
+        self.steering = steering
+        self.steering.initialize()
