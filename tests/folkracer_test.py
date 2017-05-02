@@ -4,27 +4,27 @@ from folkracer import *
 from steering import Steering
 
 class FolkracerUnitTest(unittest.TestCase):
+    
+    def setUp(self):
+        self.steering = Steering()
+        self.steering.initialize = Mock()
+        self.folkracer = Folkracer(self.steering)
+
     def test_shouldInitializeSteeringOnStartup(self):
         #given
-        steering = Steering()
-        steering.initialize = Mock()
 
         #when
-        folkracer = Folkracer(steering)
 
         #then
-        steering.initialize.assert_called()
+        self.steering.initialize.assert_called()
 
-    def test_shouldBeOnAwaitingStartStateWhenInitialized(self):
+    def test_shouldBeOnAwaitingStartStateOnStartup(self):
         #given
-        steering = Steering()
-        steering.initialize = Mock()
 
         #when
-        folkracer = Folkracer(steering)
 
         #then
-        self.assertTrue(folkracer.getState() is State.AWAITING_START)
+        self.assertTrue(self.folkracer.getState() is State.AWAITING_START)
         
 if __name__ == '__main__':
     unittest.main()
