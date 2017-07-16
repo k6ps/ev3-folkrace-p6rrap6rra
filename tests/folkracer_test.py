@@ -1,4 +1,5 @@
 import unittest
+import time
 from unittest.mock import Mock, MagicMock, patch
 #ev3dev_mock = MagicMock()
 #ev3_mock = MagicMock()
@@ -17,7 +18,8 @@ class FolkracerUnitTest(unittest.TestCase):
         self.engine = MagicMock()
         self.distances = MagicMock()
         self.buttons = MagicMock()
-        self.folkracer = Folkracer(self.steering, self.engine, self.distances, self.buttons, MagicMock(), MagicMock(), MagicMock(), MagicMock())
+        self.settings = MagicMock()
+        self.folkracer = Folkracer(self.steering, self.engine, self.distances, self.buttons, self.settings, MagicMock(), MagicMock(), MagicMock())
 
     def test_shouldInitializeSteeringOnStartup(self):
         #given
@@ -51,6 +53,18 @@ class FolkracerUnitTest(unittest.TestCase):
         
         #then
         self.assertTrue(self.folkracer.getState() is State.STARTING)
+        
+    @patch('time.sleep', return_value=None)
+    def test_shouldDelayPredefinedSecondsWhenStartButtonPressed(self, patched_time_sleep):
+        #given
+        start_delay_seconds = 3
+        self.settings.getStartDelaySeconds.return_value = start_delay_seconds
+
+        #when
+        self.folkracer.startButtonPressed()
+        
+        #then
+        self.assertEqual(start_delay_seconds, time.sleep.call_count)
         
 if __name__ == '__main__':
     unittest.main()

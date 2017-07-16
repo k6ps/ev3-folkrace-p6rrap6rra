@@ -1,3 +1,4 @@
+import time
 from enum import Enum
 #import ev3dev.ev3 as ev3
 #from ev3dev.ev3 import Button
@@ -11,7 +12,6 @@ class State(Enum):
 class Folkracer(object):
 
     def __init__(self, steering, engine, distances, buttons, settings, orientation, notifications, log):
-
         self.steering = steering
         self.steering.initialize()
         self.engine = engine
@@ -23,14 +23,14 @@ class Folkracer(object):
         self.notifications = notifications
         self.log = log
         self.state = State.AWAITING_START
-        #while 1:
-        #   if buttons.enter:
-        #       break
 
     def getState(self):
         return self.state
 
     def startButtonPressed(self):
        self.state = State.STARTING
+       start_delay_seconds = self.settings.getStartDelaySeconds()
+       for x in range(0, start_delay_seconds):
+           time.sleep(1)
 
     
