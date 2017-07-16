@@ -11,7 +11,7 @@ class State(Enum):
 
 class Folkracer(object):
 
-    def __init__(self, steering, engine, distances, buttons, settings, orientation, notifications, log):
+    def __init__(self, steering, engine, distances, buttons, settings, orientation, notifications, log, lights_and_sounds):
         self.steering = steering
         self.steering.initialize()
         self.engine = engine
@@ -22,6 +22,7 @@ class Folkracer(object):
         self.orientation = orientation
         self.notifications = notifications
         self.log = log
+        self.lights_and_sounds = lights_and_sounds
         self.state = State.AWAITING_START
 
     def getState(self):
@@ -32,5 +33,6 @@ class Folkracer(object):
        start_delay_seconds = self.settings.getStartDelaySeconds()
        for x in range(0, start_delay_seconds):
            time.sleep(1)
+           self.lights_and_sounds.startDelaySecond()
 
     

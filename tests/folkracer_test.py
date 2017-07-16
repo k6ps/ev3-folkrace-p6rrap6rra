@@ -19,7 +19,8 @@ class FolkracerUnitTest(unittest.TestCase):
         self.distances = MagicMock()
         self.buttons = MagicMock()
         self.settings = MagicMock()
-        self.folkracer = Folkracer(self.steering, self.engine, self.distances, self.buttons, self.settings, MagicMock(), MagicMock(), MagicMock())
+        self.lights_and_sounds = MagicMock()
+        self.folkracer = Folkracer(self.steering, self.engine, self.distances, self.buttons, self.settings, MagicMock(), MagicMock(), MagicMock(), self.lights_and_sounds)
 
     def test_shouldInitializeSteeringOnStartup(self):
         #given
@@ -65,6 +66,18 @@ class FolkracerUnitTest(unittest.TestCase):
         
         #then
         self.assertEqual(start_delay_seconds, time.sleep.call_count)
+
+    @patch('time.sleep', return_value=None)
+    def test_shouldNotifyPredefinedSecondsWhenStartButtonPressed(self, patched_time_sleep):
+        #given
+        start_delay_seconds = 3
+        self.settings.getStartDelaySeconds.return_value = start_delay_seconds
+
+        #when
+        self.folkracer.startButtonPressed()
         
+        #then
+        self.assertEqual(start_delay_seconds, self.lights_and_sounds.startDelaySecond.call_count)
+
 if __name__ == '__main__':
     unittest.main()
