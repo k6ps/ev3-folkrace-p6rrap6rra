@@ -1,12 +1,6 @@
 import unittest
 import time
 from unittest.mock import Mock, MagicMock, patch
-#ev3dev_mock = MagicMock()
-#ev3_mock = MagicMock()
-#import sys
-#sys.modules["ev3dev"] = ev3dev_mock
-#sys.modules["ev3dev.ev3"] = ev3_mock
-
 from folkracer import *
 from steering import Steering
 
