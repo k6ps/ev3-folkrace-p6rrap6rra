@@ -13,7 +13,7 @@ class LightsAndSoundsUnitTest(unittest.TestCase):
         self.lights_and_sounds = LightsAndSounds()
 
     @patch('ev3dev.ev3.Sound.beep')
-    def test_shouldCallEV3BeepWhen(self, patched_beep):
+    def test_shouldCallEV3BeepWhenStartDelaySecondCalled(self, patched_beep):
         #given
 
         #when
