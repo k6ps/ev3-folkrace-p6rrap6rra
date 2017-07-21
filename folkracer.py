@@ -7,7 +7,7 @@ class State(Enum):
 
 class Folkracer(object):
 
-    def __init__(self, steering, engine, distances, buttons, settings, orientation, notifications, log, lights_and_sounds):
+    def __init__(self, steering, engine, distances, buttons, settings, orientation, log, lights_and_sounds):
         self.steering = steering
         self.steering.initialize()
         self.engine = engine
@@ -16,7 +16,6 @@ class Folkracer(object):
         self.buttons.addStartButtonListener(self)
         self.settings = settings
         self.orientation = orientation
-        self.notifications = notifications
         self.log = log
         self.lights_and_sounds = lights_and_sounds
         self.state = State.AWAITING_START

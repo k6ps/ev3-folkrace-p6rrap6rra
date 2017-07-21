@@ -14,7 +14,7 @@ class FolkracerUnitTest(unittest.TestCase):
         self.buttons = MagicMock()
         self.settings = MagicMock()
         self.lights_and_sounds = MagicMock()
-        self.folkracer = Folkracer(self.steering, self.engine, self.distances, self.buttons, self.settings, MagicMock(), MagicMock(), MagicMock(), self.lights_and_sounds)
+        self.folkracer = Folkracer(self.steering, self.engine, self.distances, self.buttons, self.settings, MagicMock(), MagicMock(), self.lights_and_sounds)
 
     def test_shouldInitializeSteeringOnStartup(self):
         #given
