@@ -7,97 +7,89 @@ sys.modules["ev3dev"] = ev3dev_mock
 sys.modules["ev3dev.ev3"] = ev3_mock
 from buttons import Buttons
 
-class EV3ButtonsMock(unittest.mock.Mock):
-    
-    def __init__(self):
-        self.on_up = None
-
 class ButtonsUnitTest(unittest.TestCase):
 
     def setUp(self):
         self.buttons = Buttons()
         self.start_button_listener = MagicMock()
+        self.ev3_buttons = MagicMock()
+        self.buttons.ev3_buttons = self.ev3_buttons
 
-    @patch('ev3dev.ev3.Buttons')
-    def test_shouldFireStartButtonPressedWhenEV3UpButtonPressed(self, ev3_buttons_mock):
+    def test_shouldFireStartButtonPressedWhenEV3UpButtonPressed(self):
         #given
         self.buttons.addStartButtonListener(self.start_button_listener)
 
         #when 
-        ev3_buttons_mock.on_up()
+        self.ev3_buttons.on_up()
 
         #then
         self.start_button_listener.startButtonPressed.assert_called_once()
 
-    @patch('ev3dev.ev3.Buttons')
-    def test_shouldNotFireStartButtonPressedWhenNoStartButtonListenerAddedAndEV3UpButtonPressed(self, ev3_buttons_mock):
+    def test_shouldNotFireStartButtonPressedWhenNoStartButtonListenerAddedAndEV3UpButtonPressed(self):
         #given
 
         #when 
-        ev3_buttons_mock.on_up()
+        self.ev3_buttons.on_up()
 
         #then
         self.start_button_listener.startButtonPressed.assert_not_called()
 
-    @patch('ev3dev.ev3.Buttons')
-    def test_shouldFireStartButtonPressedWhenEV3DownButtonPressed(self, ev3_buttons_mock):
+    def test_shouldFireStartButtonPressedWhenEV3DownButtonPressed(self):
         #given
         self.buttons.addStartButtonListener(self.start_button_listener)
 
         #when 
-        ev3_buttons_mock.on_down()
+        self.ev3_buttons.on_down()
 
         #then
         self.start_button_listener.startButtonPressed.assert_called_once()
 
-    @patch('ev3dev.ev3.Buttons')
-    def test_shouldNotFireStartButtonPressedWhenNoStartButtonListenerAddedAndEV3DownButtonPressed(self, ev3_buttons_mock):
+    def test_shouldNotFireStartButtonPressedWhenNoStartButtonListenerAddedAndEV3DownButtonPressed(self):
         #given
 
         #when 
-        ev3_buttons_mock.on_down()
+        self.ev3_buttons.on_down()
 
         #then
         self.start_button_listener.startButtonPressed.assert_not_called()
 
-    @patch('ev3dev.ev3.Buttons')
-    def test_shouldFireStartButtonPressedWhenEV3LeftButtonPressed(self, ev3_buttons_mock):
+    def test_shouldFireStartButtonPressedWhenEV3LeftButtonPressed(self):
         #given
         self.buttons.addStartButtonListener(self.start_button_listener)
 
         #when 
-        ev3_buttons_mock.on_left()
+        self.ev3_buttons.on_left()
 
         #then
         self.start_button_listener.startButtonPressed.assert_called_once()
 
-    @patch('ev3dev.ev3.Buttons')
-    def test_shouldNotFireStartButtonPressedWhenNoStartButtonListenerAddedAndEV3LeftButtonPressed(self, ev3_buttons_mock):
+    def test_shouldNotFireStartButtonPressedWhenNoStartButtonListenerAddedAndEV3LeftButtonPressed(self):
         #given
 
         #when 
-        ev3_buttons_mock.on_left()
+        self.ev3_buttons.on_left()
 
         #then
         self.start_button_listener.startButtonPressed.assert_not_called()
 
-    @patch('ev3dev.ev3.Buttons')
-    def test_shouldFireStartButtonPressedWhenEV3RightButtonPressed(self, ev3_buttons_mock):
+    def test_shouldFireStartButtonPressedWhenEV3RightButtonPressed(self):
         #given
         self.buttons.addStartButtonListener(self.start_button_listener)
 
         #when 
-        ev3_buttons_mock.on_right()
+        self.ev3_buttons.on_right()
 
         #then
         self.start_button_listener.startButtonPressed.assert_called_once()
 
-    @patch('ev3dev.ev3.Buttons')
-    def test_shouldNotFireStartButtonPressedWhenNoStartButtonListenerAddedAndEV3RightButtonPressed(self, ev3_buttons_mock):
+    def test_shouldNotFireStartButtonPressedWhenNoStartButtonListenerAddedAndEV3RightButtonPressed(self):
         #given
 
         #when 
-        ev3_buttons_mock.on_right()
+        self.ev3_buttons.on_right()
 
         #then
         self.start_button_listener.startButtonPressed.assert_not_called()
+
+if __name__ == '__main__':
+    unittest.main()
