@@ -20,6 +20,10 @@ class Folkracer(object):
         self.lights_and_sounds = lights_and_sounds
         self.state = State.AWAITING_START
 
+    def run(self):
+        while 1:
+            pass
+
     def getState(self):
         return self.state
 
