@@ -1,4 +1,4 @@
 class Steering:
     
-    def initialize():
+    def initialize(self):
         return
