@@ -15,3 +15,4 @@ if __name__ == "__main__":
     ev3.Sound.speak('Loading').wait()
     folkracer = Folkracer(Steering(), None, None, Buttons(), Settings(), None, None, LightsAndSounds())
     folkracer.run()
+    ev3.Sound.speak('Shutting down').wait()

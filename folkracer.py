@@ -1,13 +1,15 @@
 import time
 from enum import Enum
+from threading import Thread
 
 class State(Enum):
     AWAITING_START = 0
     STARTING = 1
 
-class Folkracer(object):
+class Folkracer(Thread):
 
     def __init__(self, steering, engine, distances, buttons, settings, orientation, log, lights_and_sounds):
+        Thread.__init__(self)
         self.steering = steering
         self.steering.initialize()
         self.engine = engine
@@ -18,10 +20,13 @@ class Folkracer(object):
         self.orientation = orientation
         self.log = log
         self.lights_and_sounds = lights_and_sounds
+        self.setDaemon(True)
         self.state = State.AWAITING_START
 
     def run(self):
-        while 1:
+        self.buttons.setDaemon(False)
+        self.buttons.start()
+        while (True):
             pass
 
     def getState(self):
