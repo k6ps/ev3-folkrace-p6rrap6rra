@@ -1,4 +1,5 @@
 import time
+import logging
 from enum import Enum
 from threading import Thread
 
@@ -33,8 +34,9 @@ class Folkracer(Thread):
         return self.state
 
     def startButtonPressed(self):
-       self.state = State.STARTING
-       start_delay_seconds = self.settings.getStartDelaySeconds()
-       for _ in range(0, start_delay_seconds):
-           time.sleep(1)
-           self.lights_and_sounds.startDelaySecond()
+        logging.debug('Folkracer starting')
+        self.state = State.STARTING
+        start_delay_seconds = self.settings.getStartDelaySeconds()
+        for _ in range(0, start_delay_seconds):
+            time.sleep(1)
+            self.lights_and_sounds.startDelaySecond()
