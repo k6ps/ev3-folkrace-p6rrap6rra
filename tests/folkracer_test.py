@@ -5,6 +5,12 @@ from folkracer import *
 from steering import Steering
 
 class FolkracerUnitTest(unittest.TestCase):
+
+    def _assertCloseEnough(self, expected, actual, allowed_margin):
+        min_allowed = expected - allowed_margin
+        max_allowed = expected + allowed_margin
+        self.assertTrue(actual <= max_allowed)
+        self.assertTrue(actual >= min_allowed)
     
     def setUp(self):
         self.steering = Steering()
@@ -110,8 +116,33 @@ class FolkracerUnitTest(unittest.TestCase):
         time.sleep(test_frame_count * time_frame_milliseconds * 0.001)
 
         # then
-        self.assertEqual(test_frame_count, self.distances.getDistances.call_count)
+        self._assertCloseEnough(test_frame_count, self.distances.getDistances.call_count, 1)
         
+    def test_shouldNotReadDistancesOnceEveryTimeframeWhenInStartingState(self):
+        # given
+        time_frame_milliseconds = 100
+        self.settings.getTimeFrameMilliseconds.return_value = time_frame_milliseconds
+        test_frame_count = 7
 
+        # when
+        self.folkracer.enterStartingState()
+        time.sleep(test_frame_count * time_frame_milliseconds * 0.001)
+
+        # then
+        self.distances.getDistances.assert_not_called()
+        
+    def test_shouldNotReadDistancesOnceEveryTimeframeWhenInAwaitingStartState(self):
+        # given
+        time_frame_milliseconds = 100
+        self.settings.getTimeFrameMilliseconds.return_value = time_frame_milliseconds
+        test_frame_count = 7
+
+        # when
+        self.folkracer.enterAwaitingStartState()
+        time.sleep(test_frame_count * time_frame_milliseconds * 0.001)
+
+        # then
+        self.distances.getDistances.assert_not_called()
+        
 if __name__ == '__main__':
     unittest.main()

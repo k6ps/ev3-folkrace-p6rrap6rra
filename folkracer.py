@@ -58,7 +58,8 @@ class Folkracer(Thread):
     def run(self):
         time_frame_length_seconds = 0.001 * self.settings.getTimeFrameMilliseconds()
         while (self._stop_requested == False):
-            self.distances.getDistances()
+            if (State.RUNNING == self.getState()):
+                self.distances.getDistances()
             time.sleep(time_frame_length_seconds)
 
     def getState(self):
