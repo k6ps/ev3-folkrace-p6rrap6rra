@@ -84,5 +84,17 @@ class FolkracerUnitTest(unittest.TestCase):
         # then
         self.assertEqual(State.RUNNING, self.folkracer.getState())
 
+    def test_shouldStartDistanceMeasuringProcessWhenEnteringRunningState(self):
+        # given
+        start_delay_seconds = 1
+        self.settings.getStartDelaySeconds.return_value = start_delay_seconds
+
+        # when
+        self.folkracer.startButtonPressed()
+        time.sleep(start_delay_seconds + 0.1)
+
+        # then
+        self.distances.start.assert_called()
+
 if __name__ == '__main__':
     unittest.main()

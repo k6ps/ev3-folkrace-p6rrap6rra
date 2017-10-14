@@ -8,21 +8,19 @@ class State(Enum):
     STARTING = 1
     RUNNING = 2
 
-class StartingSequenceRunner(Thread):
+class StartDelaySecondsRunner(Thread):
 
     def __init__(self, folkracer):
         Thread.__init__(self)
         self.folkracer = folkracer
 
     def run(self):
-        logging.debug('Entering STARTING state')
-        self.folkracer.state = State.STARTING
         start_delay_seconds = self.folkracer.settings.getStartDelaySeconds()
         for _ in range(0, start_delay_seconds):
             time.sleep(1)
             self.folkracer.lights_and_sounds.startDelaySecond()
-        self.folkracer.state = State.RUNNING
-            
+        self.folkracer._enterRunningState()
+
 class Folkracer(Thread):
 
     def __init__(self, steering, engine, distances, buttons, settings, orientation, log, lights_and_sounds):
@@ -32,17 +30,31 @@ class Folkracer(Thread):
         self.engine = engine
         self.distances = distances
         self.buttons = buttons
-        self.buttons.addStartButtonListener(self)
         self.settings = settings
         self.orientation = orientation
         self.log = log
         self.lights_and_sounds = lights_and_sounds
         self.setDaemon(True)
+        self._enterAwaitingStartState()
+
+    def _enterAwaitingStartState(self):
+        logging.debug('Entering AWAITING_START state')
         self.state = State.AWAITING_START
+        self.buttons.start()
+        self.buttons.addStartButtonListener(self)
+
+    def _enterRunningState(self):
+        logging.debug('Entering RUNNING state')
+        self.state = State.RUNNING
+        self.distances.start()
+
+    def _enterStartingState(self):
+        logging.debug('Entering STARTING state')
+        self.state = State.STARTING
+        self.buttons.removeStartButtonListener()
+        StartDelaySecondsRunner(self).start()
 
     def run(self):
-        self.buttons.setDaemon(False)
-        self.buttons.start()
         while (True):
             pass
 
@@ -50,6 +62,5 @@ class Folkracer(Thread):
         return self.state
 
     def startButtonPressed(self):
-        StartingSequenceRunner(self).start()
-        self.buttons.removeStartButtonListener()
+        self._enterStartingState()
 
