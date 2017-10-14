@@ -19,7 +19,7 @@ class StartDelaySecondsRunner(Thread):
         for _ in range(0, start_delay_seconds):
             time.sleep(1)
             self.folkracer.lights_and_sounds.startDelaySecond()
-        self.folkracer._enterRunningState()
+        self.folkracer.enterRunningState()
 
 class Folkracer(Thread):
 
@@ -34,33 +34,39 @@ class Folkracer(Thread):
         self.orientation = orientation
         self.log = log
         self.lights_and_sounds = lights_and_sounds
+        self._stop_requested = False
         self.setDaemon(True)
-        self._enterAwaitingStartState()
+        self.enterAwaitingStartState()
 
-    def _enterAwaitingStartState(self):
+    def enterAwaitingStartState(self):
         logging.debug('Entering AWAITING_START state')
         self.state = State.AWAITING_START
         self.buttons.start()
         self.buttons.addStartButtonListener(self)
 
-    def _enterRunningState(self):
+    def enterRunningState(self):
         logging.debug('Entering RUNNING state')
         self.state = State.RUNNING
         self.distances.start()
 
-    def _enterStartingState(self):
+    def enterStartingState(self):
         logging.debug('Entering STARTING state')
         self.state = State.STARTING
         self.buttons.removeStartButtonListener()
         StartDelaySecondsRunner(self).start()
 
     def run(self):
-        while (True):
-            pass
+        time_frame_length_seconds = 0.001 * self.settings.getTimeFrameMilliseconds()
+        while (self._stop_requested == False):
+            self.distances.getDistances()
+            time.sleep(time_frame_length_seconds)
 
     def getState(self):
         return self.state
 
     def startButtonPressed(self):
-        self._enterStartingState()
+        self.enterStartingState()
+
+    def stop(self):
+        self._stop_requested == True
 
