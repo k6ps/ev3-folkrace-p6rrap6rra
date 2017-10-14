@@ -45,33 +45,44 @@ class FolkracerUnitTest(unittest.TestCase):
 
         #when
         self.folkracer.startButtonPressed()
+        time.sleep(0.1)
         
         #then
-        self.assertTrue(self.folkracer.getState() is State.STARTING)
+        self.assertEqual(State.STARTING, self.folkracer.getState())
         
-    @patch('time.sleep', return_value=None)
-    def test_shouldDelayPredefinedSecondsWhenStartButtonPressed(self, patched_time_sleep):
+    def test_shouldRemoveStartButtonListenerAfterStartButtonPressed(self):
+        #given
+
+        #when
+        self.folkracer.startButtonPressed()
+        time.sleep(0.1)
+        
+        #then
+        self.buttons.removeStartButtonListener.assert_called()
+
+    def test_shouldNotifyPredefinedSecondsWhenStartButtonPressed(self):
         #given
         start_delay_seconds = 3
         self.settings.getStartDelaySeconds.return_value = start_delay_seconds
 
         #when
         self.folkracer.startButtonPressed()
-        
-        #then
-        self.assertEqual(start_delay_seconds, time.sleep.call_count)
-
-    @patch('time.sleep', return_value=None)
-    def test_shouldNotifyPredefinedSecondsWhenStartButtonPressed(self, patched_time_sleep):
-        #given
-        start_delay_seconds = 3
-        self.settings.getStartDelaySeconds.return_value = start_delay_seconds
-
-        #when
-        self.folkracer.startButtonPressed()
+        time.sleep(start_delay_seconds + 0.1)
         
         #then
         self.assertEqual(start_delay_seconds, self.lights_and_sounds.startDelaySecond.call_count)
+
+    def test_shouldBeOnRunningModeWhenPredefinedStartingSecondsArePassed(self):
+        # given
+        start_delay_seconds = 1
+        self.settings.getStartDelaySeconds.return_value = start_delay_seconds
+        
+        # when
+        self.folkracer.startButtonPressed()
+        time.sleep(start_delay_seconds + 0.1)
+
+        # then
+        self.assertEqual(State.RUNNING, self.folkracer.getState())
 
 if __name__ == '__main__':
     unittest.main()
