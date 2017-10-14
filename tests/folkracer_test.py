@@ -107,7 +107,7 @@ class FolkracerUnitTest(unittest.TestCase):
 
         # when
         self.folkracer.enterRunningState()
-        time.sleep((test_frame_count * time_frame_milliseconds * 0.001) + 0.05)
+        time.sleep(test_frame_count * time_frame_milliseconds * 0.001)
 
         # then
         self.assertEqual(test_frame_count, self.distances.getDistances.call_count)
