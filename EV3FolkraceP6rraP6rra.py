@@ -18,6 +18,12 @@ class Settings(object):
     def getTimeFrameMilliseconds(self):
         return 100
 
+    def hasFrontBumper(self):
+        return False
+
+    def hasFrontDistanceSensor(self):
+        return True
+
 if __name__ == "__main__":
     logging.info('Loading')
     ev3.Sound.speak('Loading').wait()
