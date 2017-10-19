@@ -56,11 +56,15 @@ class Folkracer(Thread):
         StartDelaySecondsRunner(self).start()
 
     def run(self):
+        logging.debug('Folkracer started')
         time_frame_length_seconds = 0.001 * self.settings.getTimeFrameMilliseconds()
         while (self._stop_requested == False):
             if (State.RUNNING == self.getState()):
-                self.distances.getDistances()
+                distance = self.distances.getDistances()
+                #distance = self.distances.getDistances()
+                #print(distance)
             time.sleep(time_frame_length_seconds)
+        logging.debug('Folkracer stopped')
 
     def getState(self):
         return self.state

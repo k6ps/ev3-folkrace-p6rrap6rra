@@ -29,5 +29,6 @@ if __name__ == "__main__":
     ev3.Sound.speak('Loading').wait()
     folkracer = Folkracer(Steering(), None, Distances(), Buttons(), Settings(), None, None, LightsAndSounds())
     folkracer.start()
+    folkracer.join()
     logging.info('Shutting down.')
     ev3.Sound.speak('Shutting down').wait()
