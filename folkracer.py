@@ -61,8 +61,7 @@ class Folkracer(Thread):
         while (self._stop_requested == False):
             if (State.RUNNING == self.getState()):
                 distance = self.distances.getDistances()
-                #distance = self.distances.getDistances()
-                #print(distance)
+                logging.debug('distance = ' + str(distance))
             time.sleep(time_frame_length_seconds)
         logging.debug('Folkracer stopped')
 
