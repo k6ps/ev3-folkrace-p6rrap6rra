@@ -22,12 +22,22 @@ class Settings(object):
         return False
 
     def hasFrontDistanceSensor(self):
-        return True
+        return False
+
+    def getRightDistanceSensorAddress(self):
+        return 'in1'
+
+    def getLeftDistanceSensorAddress(self):
+        return 'in2'
+
+    def getFrontDistanceSensorAddress(self):
+        return None
 
 if __name__ == "__main__":
     logging.info('Loading')
     ev3.Sound.speak('Loading').wait()
-    folkracer = Folkracer(Steering(), None, Distances(), Buttons(), Settings(), None, None, LightsAndSounds())
+    settings = Settings()
+    folkracer = Folkracer(Steering(), None, Distances(settings), Buttons(), settings, None, None, LightsAndSounds())
     folkracer.start()
     folkracer.join()
     logging.info('Shutting down.')
