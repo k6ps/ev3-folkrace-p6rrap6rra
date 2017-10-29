@@ -47,7 +47,6 @@ class Folkracer(Thread):
     def enterRunningState(self):
         logging.debug('Entering RUNNING state')
         self.state = State.RUNNING
-        self.distances.start()
 
     def enterStartingState(self):
         logging.debug('Entering STARTING state')

@@ -10,9 +10,6 @@ class Distances(object):
         else:
            self.distance_sensor_front = None
 
-    def start(self):
-        pass
-
     def getDistances(self):
         distances = {
             'right':self.distance_sensor_right.value(),

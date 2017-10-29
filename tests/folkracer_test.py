@@ -96,15 +96,6 @@ class FolkracerUnitTest(unittest.TestCase):
         # then
         self.assertEqual(State.RUNNING, self.folkracer.getState())
 
-    def test_shouldStartDistanceMeasuringProcessWhenEnteringRunningState(self):
-        # given
-
-        # when
-        self.folkracer.enterRunningState()
-
-        # then
-        self.distances.start.assert_called()
-
     def test_shouldReadDistancesOnceEveryTimeframeWhenInRunningState(self):
         # given
         time_frame_milliseconds = 100
