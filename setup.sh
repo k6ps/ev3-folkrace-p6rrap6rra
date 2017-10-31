@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PROJECT_NAME=ev3-folkrace-p6rrap6rra
-EV3_HOST=ev3dev.local
+EV3_HOST=ev3dev
 EV3_USER=robot
 EV3_USER_HOST=$EV3_USER@$EV3_HOST
 EV3_HOME_DIR=/home/$EV3_USER
