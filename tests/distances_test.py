@@ -1,5 +1,4 @@
 import unittest
-import unittest
 from unittest.mock import Mock, MagicMock, patch
 ev3dev_mock = MagicMock()
 core_mock = MagicMock()
