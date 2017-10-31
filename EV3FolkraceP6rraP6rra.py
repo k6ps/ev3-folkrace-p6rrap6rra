@@ -34,11 +34,17 @@ class Settings(object):
     def getFrontDistanceSensorAddress(self):
         return None
 
+    def getMotor1Address(self):
+        return 'outB'
+
+    def getMotor2Address(self):
+        return 'outC'
+
 if __name__ == "__main__":
     logging.info('Loading')
     ev3.Sound.speak('Loading').wait()
     settings = Settings()
-    folkracer = Folkracer(Steering(), Engine(), Distances(settings), Buttons(), settings, None, None, LightsAndSounds())
+    folkracer = Folkracer(Steering(), Engine(settings), Distances(settings), Buttons(), settings, None, None, LightsAndSounds())
     folkracer.start()
     folkracer.join()
     logging.info('Shutting down.')
