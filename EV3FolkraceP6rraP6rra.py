@@ -40,6 +40,9 @@ class Settings(object):
     def getMotor2Address(self):
         return 'outC'
 
+    def getMotorSpeedFactor(self):
+        return -10
+
 if __name__ == "__main__":
     logging.info('Loading')
     ev3.Sound.speak('Loading').wait()
