@@ -43,11 +43,14 @@ class Settings(object):
     def getMotorSpeedFactor(self):
         return -10
 
+    def getSteeringMotorAddress(self):
+        return 'outA'
+
 if __name__ == "__main__":
     logging.info('Loading')
     ev3.Sound.speak('Loading').wait()
     settings = Settings()
-    folkracer = Folkracer(Steering(), Engine(settings), Distances(settings), Buttons(), settings, None, None, LightsAndSounds())
+    folkracer = Folkracer(Steering(settings), Engine(settings), Distances(settings), Buttons(), settings, None, None, LightsAndSounds())
     folkracer.start()
     folkracer.join()
     logging.info('Shutting down.')
