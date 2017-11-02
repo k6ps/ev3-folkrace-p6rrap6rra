@@ -11,13 +11,13 @@ class LightsAndSoundsUnitTest(unittest.TestCase):
 
     def setUp(self):
         self.lights_and_sounds = LightsAndSounds()
+        self.lights_and_sounds.ev3_sound = MagicMock()
 
-    @patch('ev3dev.ev3.Sound.beep')
-    def test_shouldCallEV3BeepWhenStartDelaySecondCalled(self, patched_beep):
+    def test_shouldCallEV3BeepWhenStartDelaySecondCalled(self):
         #given
 
         #when
         self.lights_and_sounds.startDelaySecond()
 
         #then
-        patched_beep.assert_called_once()
+        self.lights_and_sounds.ev3_sound.beep.assert_called_once()
