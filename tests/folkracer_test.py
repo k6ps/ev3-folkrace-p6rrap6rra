@@ -13,12 +13,12 @@ class FolkracerUnitTest(unittest.TestCase):
         self.assertTrue(actual >= min_allowed)
     
     def setUp(self):
-        self.steering = Steering()
+        self.settings = MagicMock()
+        self.steering = Steering(self.settings)
         self.steering.initialize = Mock()
         self.engine = MagicMock()
         self.distances = MagicMock()
         self.buttons = MagicMock()
-        self.settings = MagicMock()
         self.settings.getTimeFrameMilliseconds.return_value = 100
         self.lights_and_sounds = MagicMock()
         self.folkracer = Folkracer(self.steering, self.engine, self.distances, self.buttons, self.settings, MagicMock(), MagicMock(), self.lights_and_sounds)
