@@ -21,3 +21,22 @@ class SteeringUnitTest(unittest.TestCase):
         # then
         self.settings.getSteeringMotorAddress.assert_called_once()
         self.assertIsNotNone(self.steering.steering_motor)
+
+    def test_shouldReadSteeringMotorSpeedFactorFromSettings(self):
+        # given
+
+        # when
+        self.steering = Steering(self.settings)
+
+        # then
+        self.settings.getSteeringMotorSpeedFactor.assert_called_once()
+
+    def test_shouldReadSteeringSpeedFromSettings(self):
+        # given
+
+        # when
+        self.steering = Steering(self.settings)
+
+        # then
+        self.settings.getSteeringSpeed.assert_called_once()
+

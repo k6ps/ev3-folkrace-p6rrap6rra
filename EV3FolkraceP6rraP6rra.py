@@ -46,6 +46,12 @@ class Settings(object):
     def getSteeringMotorAddress(self):
         return 'outA'
 
+    def getSteeringMotorSpeedFactor(self):
+        return 10
+
+    def getSteeringSpeed(self):
+        return 10
+
 if __name__ == "__main__":
     logging.info('Loading')
     ev3.Sound.speak('Loading').wait()
