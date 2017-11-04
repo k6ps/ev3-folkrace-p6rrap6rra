@@ -40,3 +40,12 @@ class SteeringUnitTest(unittest.TestCase):
         # then
         self.settings.getSteeringSpeed.assert_called_once()
 
+    def test_shouldReadSteeringMaxRangeFromSettings(self):
+        # given
+
+        # when
+        self.steering = Steering(self.settings)
+
+        # then
+        self.settings.getSteeringMaxRange.assert_called_once()
+

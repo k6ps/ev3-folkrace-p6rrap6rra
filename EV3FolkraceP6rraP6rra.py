@@ -52,6 +52,9 @@ class Settings(object):
     def getSteeringSpeed(self):
         return 10
 
+    def getSteeringMaxRange(self):
+        return 35
+
 if __name__ == "__main__":
     logging.info('Loading')
     ev3.Sound.speak('Loading').wait()
