@@ -50,10 +50,10 @@ class Settings(object):
         return 10
 
     def getSteeringSpeed(self):
-        return 10
+        return 5
 
     def getSteeringMaxRange(self):
-        return 35
+        return 37
 
 if __name__ == "__main__":
     logging.info('Loading')
