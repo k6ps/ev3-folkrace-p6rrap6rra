@@ -23,12 +23,13 @@ class StartDelaySecondsRunner(Thread):
 
 class Folkracer(Thread):
 
-    def __init__(self, steering, engine, distances, buttons, settings, orientation, log, lights_and_sounds):
+    def __init__(self, steering, engine, distances, bumpers, buttons, settings, orientation, log, lights_and_sounds):
         Thread.__init__(self)
         self.steering = steering
         self.steering.initialize()
         self.engine = engine
         self.distances = distances
+        self.bumpers = bumpers
         self.buttons = buttons
         self.settings = settings
         self.orientation = orientation
@@ -73,6 +74,7 @@ class Folkracer(Thread):
         self._stop_requested == True
 
     def _performRunningCycle(self):
+        bumper_statuses = self.bumpers.getBumperStatuses()
         distances = self.distances.getDistances()
         logging.debug('distances = ' + str(distances))
         self.engine.setSpeed(100)

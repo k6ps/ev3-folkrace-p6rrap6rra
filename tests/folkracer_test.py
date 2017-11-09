@@ -18,10 +18,11 @@ class FolkracerUnitTest(unittest.TestCase):
         self.steering.initialize = Mock()
         self.engine = MagicMock()
         self.distances = MagicMock()
+        self.bumpers = MagicMock()
         self.buttons = MagicMock()
         self.settings.getTimeFrameMilliseconds.return_value = 100
         self.lights_and_sounds = MagicMock()
-        self.folkracer = Folkracer(self.steering, self.engine, self.distances, self.buttons, self.settings, MagicMock(), MagicMock(), self.lights_and_sounds)
+        self.folkracer = Folkracer(self.steering, self.engine, self.distances, self.bumpers, self.buttons, self.settings, MagicMock(), MagicMock(), self.lights_and_sounds)
         self.folkracer.start()
 
     def tearDown(self):
@@ -134,6 +135,19 @@ class FolkracerUnitTest(unittest.TestCase):
 
         # then
         self.distances.getDistances.assert_not_called()
+
+    def test_shouldCheckBumpersOnceEveryTimeframeWhenInRunningState(self):
+        # given
+        time_frame_milliseconds = 100
+        self.settings.getTimeFrameMilliseconds.return_value = time_frame_milliseconds
+        test_frame_count = 7
+
+        # when
+        self.folkracer.enterRunningState()
+        time.sleep(test_frame_count * time_frame_milliseconds * 0.001)
+
+        # then
+        self._assertCloseEnough(test_frame_count, self.bumpers.getBumperStatuses.call_count, 1)
         
 if __name__ == '__main__':
     unittest.main()
