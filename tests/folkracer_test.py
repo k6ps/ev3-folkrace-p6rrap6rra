@@ -148,6 +148,33 @@ class FolkracerUnitTest(unittest.TestCase):
 
         # then
         self._assertCloseEnough(test_frame_count, self.bumpers.getBumperStatuses.call_count, 1)
-        
+
+    def test_shouldNotCheckBumpersOnceEveryTimeframeWhenInStartingState(self):
+        # given
+        time_frame_milliseconds = 100
+        self.settings.getTimeFrameMilliseconds.return_value = time_frame_milliseconds
+        test_frame_count = 7
+
+        # when
+        self.folkracer.enterStartingState()
+        time.sleep(test_frame_count * time_frame_milliseconds * 0.001)
+
+        # then
+        self.bumpers.getBumperStatuses.assert_not_called()
+
+
+    def test_shouldNotCheckBumpersOnceEveryTimeframeWhenInAwaitingStartState(self):
+        # given
+        time_frame_milliseconds = 100
+        self.settings.getTimeFrameMilliseconds.return_value = time_frame_milliseconds
+        test_frame_count = 7
+
+        # when
+        self.folkracer.enterAwaitingStartState()
+        time.sleep(test_frame_count * time_frame_milliseconds * 0.001)
+
+        # then
+        self.bumpers.getBumperStatuses.assert_not_called()
+
 if __name__ == '__main__':
     unittest.main()
