@@ -59,9 +59,7 @@ class Folkracer(Thread):
         time_frame_length_seconds = 0.001 * self.settings.getTimeFrameMilliseconds()
         while (self._stop_requested == False):
             if (State.RUNNING == self.getState()):
-                distances = self.distances.getDistances()
-                logging.debug('distances = ' + str(distances))
-                self.engine.setSpeed(100)
+                self._performRunningCycle()
             time.sleep(time_frame_length_seconds)
         logging.debug('Folkracer stopped')
 
@@ -73,4 +71,9 @@ class Folkracer(Thread):
 
     def stop(self):
         self._stop_requested == True
+
+    def _performRunningCycle(self):
+        distances = self.distances.getDistances()
+        logging.debug('distances = ' + str(distances))
+        self.engine.setSpeed(100)
 
