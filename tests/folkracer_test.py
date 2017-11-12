@@ -1,8 +1,9 @@
 import unittest
 import time
-from unittest.mock import Mock, MagicMock, patch
-from folkracer import *
+from unittest.mock import Mock, MagicMock
+from folkracer import Folkracer, State
 from steering import Steering
+
 
 class FolkracerUnitTest(unittest.TestCase):
 
@@ -20,7 +21,8 @@ class FolkracerUnitTest(unittest.TestCase):
         self.distances = MagicMock()
         self.bumpers = MagicMock()
         self.buttons = MagicMock()
-        self.settings.getTimeFrameMilliseconds.return_value = 100
+        self.time_frame_milliseconds = 100
+        self.settings.getTimeFrameMilliseconds.return_value = self.time_frame_milliseconds
         self.lights_and_sounds = MagicMock()
         self.folkracer = Folkracer(self.steering, self.engine, self.distances, self.bumpers, self.buttons, self.settings, MagicMock(), MagicMock(), self.lights_and_sounds)
         self.folkracer.start()
@@ -99,65 +101,55 @@ class FolkracerUnitTest(unittest.TestCase):
 
     def test_shouldReadDistancesOnceEveryTimeframeWhenInRunningState(self):
         # given
-        time_frame_milliseconds = 100
-        self.settings.getTimeFrameMilliseconds.return_value = time_frame_milliseconds
         test_frame_count = 7
 
         # when
         self.folkracer.enterRunningState()
-        time.sleep(test_frame_count * time_frame_milliseconds * 0.001)
+        time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
 
         # then
         self._assertCloseEnough(test_frame_count, self.distances.getDistances.call_count, 1)
         
     def test_shouldNotReadDistancesOnceEveryTimeframeWhenInStartingState(self):
         # given
-        time_frame_milliseconds = 100
-        self.settings.getTimeFrameMilliseconds.return_value = time_frame_milliseconds
         test_frame_count = 7
 
         # when
         self.folkracer.enterStartingState()
-        time.sleep(test_frame_count * time_frame_milliseconds * 0.001)
+        time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
 
         # then
         self.distances.getDistances.assert_not_called()
         
     def test_shouldNotReadDistancesOnceEveryTimeframeWhenInAwaitingStartState(self):
         # given
-        time_frame_milliseconds = 100
-        self.settings.getTimeFrameMilliseconds.return_value = time_frame_milliseconds
         test_frame_count = 7
 
         # when
         self.folkracer.enterAwaitingStartState()
-        time.sleep(test_frame_count * time_frame_milliseconds * 0.001)
+        time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
 
         # then
         self.distances.getDistances.assert_not_called()
 
     def test_shouldCheckBumpersOnceEveryTimeframeWhenInRunningState(self):
         # given
-        time_frame_milliseconds = 100
-        self.settings.getTimeFrameMilliseconds.return_value = time_frame_milliseconds
         test_frame_count = 7
 
         # when
         self.folkracer.enterRunningState()
-        time.sleep(test_frame_count * time_frame_milliseconds * 0.001)
+        time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
 
         # then
         self._assertCloseEnough(test_frame_count, self.bumpers.getBumperStatuses.call_count, 1)
 
     def test_shouldNotCheckBumpersOnceEveryTimeframeWhenInStartingState(self):
         # given
-        time_frame_milliseconds = 100
-        self.settings.getTimeFrameMilliseconds.return_value = time_frame_milliseconds
         test_frame_count = 7
 
         # when
         self.folkracer.enterStartingState()
-        time.sleep(test_frame_count * time_frame_milliseconds * 0.001)
+        time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
 
         # then
         self.bumpers.getBumperStatuses.assert_not_called()
@@ -165,13 +157,11 @@ class FolkracerUnitTest(unittest.TestCase):
 
     def test_shouldNotCheckBumpersOnceEveryTimeframeWhenInAwaitingStartState(self):
         # given
-        time_frame_milliseconds = 100
-        self.settings.getTimeFrameMilliseconds.return_value = time_frame_milliseconds
         test_frame_count = 7
 
         # when
         self.folkracer.enterAwaitingStartState()
-        time.sleep(test_frame_count * time_frame_milliseconds * 0.001)
+        time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
 
         # then
         self.bumpers.getBumperStatuses.assert_not_called()
