@@ -1,0 +1,2 @@
+-e git+http://github.com/ev3dev/ev3dev-lang-python.git#egg=ev3dev
+-e git+https://github.com/kanishkasthana/ivPID.git#egg=ivPID
