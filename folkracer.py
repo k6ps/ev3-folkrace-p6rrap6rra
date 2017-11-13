@@ -77,5 +77,7 @@ class Folkracer(Thread):
         bumper_statuses = self.bumpers.getBumperStatuses()
         distances = self.distances.getDistances()
         logging.debug('distances = ' + str(distances))
+        if (distances['left'] == distances['right']):
+            self.steering.setSteeringPosition(0)
         self.engine.setSpeed(100)
 

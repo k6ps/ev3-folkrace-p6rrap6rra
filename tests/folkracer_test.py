@@ -15,7 +15,7 @@ class FolkracerUnitTest(unittest.TestCase):
     
     def setUp(self):
         self.settings = MagicMock()
-        self.steering = Steering(self.settings)
+        self.steering = MagicMock()
         self.steering.initialize = Mock()
         self.engine = MagicMock()
         self.distances = MagicMock()
@@ -165,6 +165,51 @@ class FolkracerUnitTest(unittest.TestCase):
 
         # then
         self.bumpers.getBumperStatuses.assert_not_called()
+
+    def test_shouldCalculateCourseErrorCorrectlyWhenRightAndLeftDistancesNormalEqual(self):
+        # given
+        test_frame_count = 2
+        self.distances.getDistances.return_value = {
+            'right':55,
+            'left':55
+        }
+
+        # when
+        self.folkracer.enterRunningState()
+        time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
+
+        # then
+        self.steering.setSteeringPosition.assert_called_with(0)
+
+    def test_shouldCalculateCourseErrorCorrectlyWhenRightAndLeftDistancesLargeEqual(self):
+        # given
+        test_frame_count = 2
+        self.distances.getDistances.return_value = {
+            'right':550,
+            'left':550
+        }
+
+        # when
+        self.folkracer.enterRunningState()
+        time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
+
+        # then
+        self.steering.setSteeringPosition.assert_called_with(0)
+
+    def test_shouldCalculateCourseErrorCorrectlyWhenRightAndLeftDistancesSmallEqual(self):
+        # given
+        test_frame_count = 2
+        self.distances.getDistances.return_value = {
+            'right':5,
+            'left':5
+        }
+
+        # when
+        self.folkracer.enterRunningState()
+        time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
+
+        # then
+        self.steering.setSteeringPosition.assert_called_with(0)
 
 if __name__ == '__main__':
     unittest.main()
