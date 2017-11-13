@@ -2,16 +2,14 @@ import unittest
 import time
 from unittest.mock import Mock, MagicMock
 from folkracer import Folkracer, State
-from steering import Steering
-
 
 class FolkracerUnitTest(unittest.TestCase):
 
     def _assertCloseEnough(self, expected, actual, allowed_margin):
         min_allowed = expected - allowed_margin
         max_allowed = expected + allowed_margin
-        self.assertTrue(actual <= max_allowed)
-        self.assertTrue(actual >= min_allowed)
+        self.assertTrue(actual <= max_allowed, msg = 'actual (' + str(actual) + ') > expected + allowed_margin (' + str(max_allowed) + ')')
+        self.assertTrue(actual >= min_allowed, msg = 'actual (' + str(actual) + ') < expected - allowed_margin (' + str(min_allowed) + ')')
     
     def setUp(self):
         self.settings = MagicMock()
@@ -19,6 +17,10 @@ class FolkracerUnitTest(unittest.TestCase):
         self.steering.initialize = Mock()
         self.engine = MagicMock()
         self.distances = MagicMock()
+        self.distances.getDistances.return_value = {
+            'right':55,
+            'left':55
+        }
         self.bumpers = MagicMock()
         self.buttons = MagicMock()
         self.time_frame_milliseconds = 100
@@ -108,7 +110,7 @@ class FolkracerUnitTest(unittest.TestCase):
         time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
 
         # then
-        self._assertCloseEnough(test_frame_count, self.distances.getDistances.call_count, 1)
+        self._assertCloseEnough(test_frame_count, self.distances.getDistances.call_count, 2)
         
     def test_shouldNotReadDistancesOnceEveryTimeframeWhenInStartingState(self):
         # given
@@ -141,7 +143,7 @@ class FolkracerUnitTest(unittest.TestCase):
         time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
 
         # then
-        self._assertCloseEnough(test_frame_count, self.bumpers.getBumperStatuses.call_count, 1)
+        self._assertCloseEnough(test_frame_count, self.bumpers.getBumperStatuses.call_count, 2)
 
     def test_shouldNotCheckBumpersOnceEveryTimeframeWhenInStartingState(self):
         # given
@@ -166,13 +168,9 @@ class FolkracerUnitTest(unittest.TestCase):
         # then
         self.bumpers.getBumperStatuses.assert_not_called()
 
-    def test_shouldCalculateCourseErrorCorrectlyWhenRightAndLeftDistancesNormalEqual(self):
+    def test_shouldCenterSteeringWhenRightAndLeftDistancesAreNormalEqual(self):
         # given
         test_frame_count = 2
-        self.distances.getDistances.return_value = {
-            'right':55,
-            'left':55
-        }
 
         # when
         self.folkracer.enterRunningState()
@@ -181,7 +179,7 @@ class FolkracerUnitTest(unittest.TestCase):
         # then
         self.steering.setSteeringPosition.assert_called_with(0)
 
-    def test_shouldCalculateCourseErrorCorrectlyWhenRightAndLeftDistancesLargeEqual(self):
+    def test_shouldCenterSteeringWhenRightAndLeftDistancesAreLargeEqual(self):
         # given
         test_frame_count = 2
         self.distances.getDistances.return_value = {
@@ -196,7 +194,7 @@ class FolkracerUnitTest(unittest.TestCase):
         # then
         self.steering.setSteeringPosition.assert_called_with(0)
 
-    def test_shouldCalculateCourseErrorCorrectlyWhenRightAndLeftDistancesSmallEqual(self):
+    def test_shouldCenterSteeringWhenRightAndLeftDistancesAreSmallEqual(self):
         # given
         test_frame_count = 2
         self.distances.getDistances.return_value = {
@@ -210,6 +208,38 @@ class FolkracerUnitTest(unittest.TestCase):
 
         # then
         self.steering.setSteeringPosition.assert_called_with(0)
+
+    def test_shouldTurnSlightlyLeftWhenLeftDistanceIsSlightlyBiggerThanRight(self):
+        # given
+        test_frame_count = 2
+        self.distances.getDistances.return_value = {
+            'right':50,
+            'left':60
+        }
+
+        # when
+        self.folkracer.enterRunningState()
+        time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
+
+        # then
+        expected_steering = round(-1 * ((60 * 100 / 50) - 100), 2)
+        self.steering.setSteeringPosition.assert_called_with(expected_steering)
+
+    def test_shouldTurnSlightlyRightWhenRightDistanceIsSlightlyBiggerThanLeft(self):
+        # given
+        test_frame_count = 2
+        self.distances.getDistances.return_value = {
+            'right':65,
+            'left':45
+        }
+
+        # when
+        self.folkracer.enterRunningState()
+        time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
+
+        # then
+        expected_steering = round((65 * 100 / 45) - 100, 2)
+        self.steering.setSteeringPosition.assert_called_with(expected_steering)
 
 if __name__ == '__main__':
     unittest.main()

@@ -48,3 +48,6 @@ class Steering:
         _rounded_current_steering_position = round(_current_steering_position, STEERING_POSITION_ROUND_DECIMAL_PLACES)
         logging.debug('getCurrentSteeringPosition: rounded steering position = '+ str(_rounded_current_steering_position))
         return _rounded_current_steering_position
+
+    def setSteeringPosition(self, steering):
+        logging.debug('setSteeringPosition: ' + str(steering))
