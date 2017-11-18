@@ -56,6 +56,18 @@ class Settings(object):
     def getSteeringMaxRange(self):
         return 37
 
+    def getMaxSideDistance(self):
+        return 155
+
+    def getMinSideDistance(self):
+        return 10
+
+    def getNormSideDistance(self):
+        return 90
+
+    def getMaxSteeringError(self):
+        return 100
+
 if __name__ == "__main__":
     logging.info('Loading')
     ev3.Sound.speak('Loading').wait()

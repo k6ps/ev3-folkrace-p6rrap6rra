@@ -35,6 +35,12 @@ class Folkracer(Thread):
         self.orientation = orientation
         self.log = log
         self.lights_and_sounds = lights_and_sounds
+        self.expected_steering_calculator = ExpectedSteeringCalculator(
+            self.settings.getMaxSideDistance(),
+            self.settings.getNormSideDistance(),
+            self.settings.getMinSideDistance(),
+            self.settings.getMaxSteeringError()
+        )
         self._stop_requested = False
         self.setDaemon(True)
         self.enterAwaitingStartState()
@@ -83,15 +89,11 @@ class Folkracer(Thread):
         self.engine.setSpeed(100)
 
     def calculate_desired_steering(self, distances):
-        left_ = distances['left']
-        right_ = distances['right']
-        if (left_ < right_):
-            steering = (right_ * 100 / left_) - 100
-        elif (left_ > right_):
-            steering = -1 * ((left_ * 100 / right_) - 100)
-        else:
-            steering = 0.0
-        return steering
+        expected_steering = self.expected_steering_calculator.calculateExpectedSteering(
+            distances['left'],
+            distances['right']
+        )
+        return expected_steering
 
 class ExpectedSteeringCalculator(object):
 
