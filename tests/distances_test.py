@@ -1,10 +1,7 @@
 import unittest
 from unittest.mock import MagicMock
-ev3dev_mock = MagicMock()
-core_mock = MagicMock()
-import sys
-sys.modules["ev3dev"] = ev3dev_mock
-sys.modules["ev3dev.core"] = core_mock
+from tests.ev3dev_test_util import Ev3devTestUtil
+Ev3devTestUtil.create_fake_ev3dev_module()
 from distances import Distances
 
 

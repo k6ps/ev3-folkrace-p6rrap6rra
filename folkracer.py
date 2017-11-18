@@ -3,10 +3,12 @@ import logging
 from enum import Enum
 from threading import Thread
 
+
 class State(Enum):
     AWAITING_START = 0
     STARTING = 1
     RUNNING = 2
+
 
 class StartDelaySecondsRunner(Thread):
 
@@ -20,6 +22,7 @@ class StartDelaySecondsRunner(Thread):
             time.sleep(1)
             self.folkracer.lights_and_sounds.startDelaySecond()
         self.folkracer.enterRunningState()
+
 
 class Folkracer(Thread):
 
@@ -94,6 +97,7 @@ class Folkracer(Thread):
             distances['right']
         )
         return expected_steering
+
 
 class ExpectedSteeringCalculator(object):
 

@@ -12,6 +12,7 @@ from lights_and_sounds import LightsAndSounds
 
 logging.basicConfig(format='%(asctime)s %(message)s', filename='folkracer.log', level=logging.DEBUG)
 
+
 class Settings(object):
     
     def getStartDelaySeconds(self):
@@ -67,6 +68,7 @@ class Settings(object):
 
     def getMaxSteeringError(self):
         return 100
+
 
 if __name__ == "__main__":
     logging.info('Loading')

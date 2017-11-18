@@ -1,12 +1,9 @@
 import unittest
-from unittest.mock import MagicMock
-ev3dev_mock = MagicMock()
-ev3_mock = MagicMock()
-import sys
-sys.modules["ev3dev"] = ev3dev_mock
-sys.modules["ev3dev.ev3"] = ev3_mock
-from buttons import Buttons
 import time
+from unittest.mock import MagicMock
+from tests.ev3dev_test_util import Ev3devTestUtil
+Ev3devTestUtil.create_fake_ev3dev_module()
+from buttons import Buttons
 
 
 class ButtonsUnitTest(unittest.TestCase):

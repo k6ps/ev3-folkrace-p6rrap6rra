@@ -1,7 +1,7 @@
-import time
 import ev3dev.ev3 as ev3
 import logging
 from threading import Thread
+
 
 class Buttons(Thread):
     
