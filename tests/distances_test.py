@@ -1,11 +1,12 @@
 import unittest
-from unittest.mock import Mock, MagicMock, patch
+from unittest.mock import MagicMock
 ev3dev_mock = MagicMock()
 core_mock = MagicMock()
 import sys
 sys.modules["ev3dev"] = ev3dev_mock
 sys.modules["ev3dev.core"] = core_mock
 from distances import Distances
+
 
 class DistancesUnitTest(unittest.TestCase):
     

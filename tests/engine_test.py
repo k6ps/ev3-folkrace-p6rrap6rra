@@ -1,11 +1,12 @@
 import unittest
-from unittest.mock import Mock, MagicMock, patch
+from unittest.mock import MagicMock
 ev3dev_mock = MagicMock()
 ev3_mock = MagicMock()
 import sys
 sys.modules["ev3dev"] = ev3dev_mock
 sys.modules["ev3dev.ev3"] = ev3_mock
 from engine import Engine
+
 
 class EngineUnitTest(unittest.TestCase):
     

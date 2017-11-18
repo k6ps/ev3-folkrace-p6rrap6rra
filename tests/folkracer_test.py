@@ -1,7 +1,8 @@
 import unittest
 import time
-from unittest.mock import Mock, MagicMock
+from unittest.mock import MagicMock
 from folkracer import Folkracer, State
+
 
 class FolkracerUnitTest(unittest.TestCase):
 
@@ -14,7 +15,6 @@ class FolkracerUnitTest(unittest.TestCase):
     def setUp(self):
         self.settings = MagicMock()
         self.steering = MagicMock()
-        self.steering.initialize = Mock()
         self.engine = MagicMock()
         self.distances = MagicMock()
         self.distances.getDistances.return_value = {

@@ -8,6 +8,7 @@ sys.modules["ev3dev.ev3"] = ev3_mock
 from buttons import Buttons
 import time
 
+
 class ButtonsUnitTest(unittest.TestCase):
 
     def setUp(self):

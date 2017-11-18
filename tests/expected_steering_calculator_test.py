@@ -6,6 +6,7 @@ TEST_MIN_SIDE_DISTANCE = 25
 TEST_NORM_SIDE_DISTANCE = 60
 TEST_MAX_SIDE_DISTANCE = 100
 
+
 class ExpectedSteeringCalculatorUnitTest(unittest.TestCase):
 
     def setUp(self):
