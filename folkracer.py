@@ -93,7 +93,7 @@ class Folkracer(Thread):
             steering = 0.0
         return steering
 
-class SteeringErrorCalculator(object):
+class ExpectedSteeringCalculator(object):
 
     def __init__(self, max_side_distance, norm_side_distance, min_side_distance, max_steering_error):
         self.max_side_distance = max_side_distance
@@ -101,7 +101,7 @@ class SteeringErrorCalculator(object):
         self.min_side_distance = min_side_distance
         self.max_steering_error = max_steering_error
 
-    def calculateSteeringError(self, left_distance, right_distance):
+    def calculateExpectedSteering(self, left_distance, right_distance):
         if (left_distance < self.min_side_distance and right_distance > self.min_side_distance):
             steering_error = self.max_steering_error
         elif (right_distance < self.min_side_distance and left_distance > self.min_side_distance):
@@ -109,9 +109,9 @@ class SteeringErrorCalculator(object):
         elif (right_distance > self.max_side_distance and left_distance > self.max_side_distance):
             steering_error = 0
         elif (right_distance > self.max_side_distance):
-            steering_error = left_distance - self.norm_side_distance
+            steering_error = self.norm_side_distance - left_distance
         elif (left_distance > self.max_side_distance):
-            steering_error = self.norm_side_distance - right_distance
+            steering_error = right_distance - self.norm_side_distance
         else:
             steering_error = right_distance - left_distance
         return int((steering_error) * 100 / self.max_steering_error)
