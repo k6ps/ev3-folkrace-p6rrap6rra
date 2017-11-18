@@ -20,6 +20,9 @@ class ExpectedSteeringCalculatorUnitTest(unittest.TestCase):
             self.max_steering_error_distance
         )
 
+    def __getAbsoluteDistanceDifferenceAsProportionOfMaxSteeringErrorDistance(self, first_distance, second_distance):
+        return int(abs(first_distance - second_distance) * 100 / self.max_steering_error_distance)
+
     def test_shouldReturnZeroWhenBothDistancesAreEqual(self):
         # given
 
@@ -123,7 +126,3 @@ class ExpectedSteeringCalculatorUnitTest(unittest.TestCase):
         # then
         expected_expected_steering = self.__getAbsoluteDistanceDifferenceAsProportionOfMaxSteeringErrorDistance(distance_right, distance_left)
         self.assertEqual(expected_expected_steering, actual_expected_steering)
-
-    def __getAbsoluteDistanceDifferenceAsProportionOfMaxSteeringErrorDistance(self, first_distance, second_distance):
-        return int(abs(first_distance - second_distance) * 100 / self.max_steering_error_distance)
-
