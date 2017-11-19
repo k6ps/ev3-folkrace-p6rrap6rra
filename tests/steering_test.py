@@ -58,10 +58,11 @@ class SteeringUnitTest(unittest.TestCase):
         self.steering.steering_motor.position = -21
 
         # when
-        actual_steering_position = self.steering.getCurrentSteeringPosition()
+        __actual_steering_position = self.steering.get_current_steering_position()
 
         # then
-        self.assertAlmostEqual(-21 * 100 / 47, actual_steering_position, places=2)
+        __expected_steering_position = int(-21 * 100 / 47)
+        self.assertEqual(__expected_steering_position, __actual_steering_position)
 
     def test_shouldCalculateCorrectCurrentSteeringPositionWhenTurnedMaxLeft(self):
         # given
@@ -74,10 +75,10 @@ class SteeringUnitTest(unittest.TestCase):
         self.steering.steering_motor.position = -47
 
         # when
-        actual_steering_position = self.steering.getCurrentSteeringPosition()
+        __actual_steering_position = self.steering.get_current_steering_position()
 
         # then
-        self.assertAlmostEqual(-100, actual_steering_position, places=2)
+        self.assertEqual(-100, __actual_steering_position)
 
     def test_shouldCalculateCorrectCurrentSteeringPositionWhenTurnedRight(self):
         # given
@@ -90,10 +91,11 @@ class SteeringUnitTest(unittest.TestCase):
         self.steering.steering_motor.position = 18
 
         # when
-        actual_steering_position = self.steering.getCurrentSteeringPosition()
+        __actual_steering_position = self.steering.get_current_steering_position()
 
         # then
-        self.assertAlmostEqual(18 * 100 / 47, actual_steering_position, places=2)
+        __expected_steering_position = int(18 * 100 / 47)
+        self.assertEqual(__expected_steering_position, __actual_steering_position)
 
     def test_shouldCalculateCorrectCurrentSteeringPositionWhenTurnedMaxRight(self):
         # given
@@ -106,10 +108,10 @@ class SteeringUnitTest(unittest.TestCase):
         self.steering.steering_motor.position = 47
 
         # when
-        actual_steering_position = self.steering.getCurrentSteeringPosition()
+        __actual_steering_position = self.steering.get_current_steering_position()
 
         # then
-        self.assertAlmostEqual(100, actual_steering_position, places=2)
+        self.assertEqual(100, __actual_steering_position)
 
     def test_shouldCalculateCorrectCurrentSteeringPositionWhenAtCenter(self):
         # given
@@ -122,10 +124,10 @@ class SteeringUnitTest(unittest.TestCase):
         self.steering.steering_motor.position = 0
 
         # when
-        actual_steering_position = self.steering.getCurrentSteeringPosition()
+        __actual_steering_position = self.steering.get_current_steering_position()
 
         # then
-        self.assertAlmostEqual(0, actual_steering_position, places=2)
+        self.assertEqual(0, __actual_steering_position)
 
     def test_shouldResetSteeringPositionToCenterWhenInitialized(self):
         # given
@@ -141,7 +143,7 @@ class SteeringUnitTest(unittest.TestCase):
         self.steering.initialize()
 
         # then
-        self.assertAlmostEqual(0, self.steering.getCurrentSteeringPosition(), places=2)
+        self.assertEqual(0, self.steering.get_current_steering_position())
 
     def test_shouldTurnMaxRangePlusCompensationRightForCenteringWhenInitialized(self):
         # given

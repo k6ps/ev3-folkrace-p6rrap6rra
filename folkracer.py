@@ -86,9 +86,9 @@ class Folkracer(Thread):
         __bumper_statuses = self.bumpers.getBumperStatuses()
         __distances = self.distances.getDistances()
         logging.debug('distances = ' + str(__distances))
-        __desired_steering = self.__calculate_desired_steering(__distances)
+        __desired_steering = int(self.__calculate_desired_steering(__distances))
         logging.debug('desired steering = ' + str(__desired_steering))
-        self.steering.setSteeringPosition(round(__desired_steering, 2))
+        self.steering.set_steering_position(__desired_steering)
         self.engine.setSpeed(100)
 
     def __calculate_desired_steering(self, distances):
@@ -97,7 +97,7 @@ class Folkracer(Thread):
             distances['right']
         )
         logging.debug('expected steering = ' + str(__expected_steering))
-        __actual_steering = self.steering.getCurrentSteeringPosition()
+        __actual_steering = self.steering.get_current_steering_position()
         logging.debug('actual steering = ' + str(__actual_steering))
 
         return __expected_steering
