@@ -28,7 +28,7 @@ class ExpectedSteeringCalculatorUnitTest(unittest.TestCase):
         # given
 
         # when
-        actual_expected_steering = self.expected_steering_calculator.calculateExpectedSteering(65, 65)
+        actual_expected_steering = self.expected_steering_calculator.calculate_expected_steering(65, 65)
 
         # then
         self.assertEqual(0, actual_expected_steering)
@@ -38,7 +38,7 @@ class ExpectedSteeringCalculatorUnitTest(unittest.TestCase):
         distance_left = 70
 
         # when
-        actual_expected_steering = self.expected_steering_calculator.calculateExpectedSteering(distance_left, 500)
+        actual_expected_steering = self.expected_steering_calculator.calculate_expected_steering(distance_left, 500)
 
         # then
         expected_expected_steering = - self.__getAbsoluteDistanceDifferenceAsProportionOfMaxSteeringErrorDistance(distance_left, self.norm_side_distance)
@@ -49,7 +49,7 @@ class ExpectedSteeringCalculatorUnitTest(unittest.TestCase):
         distance_left = 45
 
         # when
-        actual_expected_steering = self.expected_steering_calculator.calculateExpectedSteering(distance_left, 500)
+        actual_expected_steering = self.expected_steering_calculator.calculate_expected_steering(distance_left, 500)
 
         # then
         expected_expected_steering = self.__getAbsoluteDistanceDifferenceAsProportionOfMaxSteeringErrorDistance(distance_left, self.norm_side_distance)
@@ -60,7 +60,7 @@ class ExpectedSteeringCalculatorUnitTest(unittest.TestCase):
         distance_right = 44
 
         # when
-        actual_expected_steering = self.expected_steering_calculator.calculateExpectedSteering(400, distance_right)
+        actual_expected_steering = self.expected_steering_calculator.calculate_expected_steering(400, distance_right)
 
         # then
         expected_expected_steering = - self.__getAbsoluteDistanceDifferenceAsProportionOfMaxSteeringErrorDistance(distance_right, self.norm_side_distance)
@@ -71,7 +71,7 @@ class ExpectedSteeringCalculatorUnitTest(unittest.TestCase):
         distance_right = 88
 
         # when
-        actual_expected_steering = self.expected_steering_calculator.calculateExpectedSteering(400, distance_right)
+        actual_expected_steering = self.expected_steering_calculator.calculate_expected_steering(400, distance_right)
 
         # then
         expected_expected_steering = self.__getAbsoluteDistanceDifferenceAsProportionOfMaxSteeringErrorDistance(distance_right, self.norm_side_distance)
@@ -81,7 +81,7 @@ class ExpectedSteeringCalculatorUnitTest(unittest.TestCase):
         # given
 
         # when
-        actual_expected_steering = self.expected_steering_calculator.calculateExpectedSteering(550, 660)
+        actual_expected_steering = self.expected_steering_calculator.calculate_expected_steering(550, 660)
 
         # then
         self.assertEqual(0, actual_expected_steering)
@@ -90,7 +90,7 @@ class ExpectedSteeringCalculatorUnitTest(unittest.TestCase):
         # given
 
         # when
-        actual_expected_steering = self.expected_steering_calculator.calculateExpectedSteering(60, 10)
+        actual_expected_steering = self.expected_steering_calculator.calculate_expected_steering(60, 10)
 
         # then
         self.assertEqual(-100, actual_expected_steering)
@@ -99,7 +99,7 @@ class ExpectedSteeringCalculatorUnitTest(unittest.TestCase):
         # given
 
         # when
-        actual_expected_steering = self.expected_steering_calculator.calculateExpectedSteering(15, 75)
+        actual_expected_steering = self.expected_steering_calculator.calculate_expected_steering(15, 75)
 
         # then
         self.assertEqual(100, actual_expected_steering)
@@ -110,7 +110,7 @@ class ExpectedSteeringCalculatorUnitTest(unittest.TestCase):
         distance_right = 45
 
         # when
-        actual_expected_steering = self.expected_steering_calculator.calculateExpectedSteering(distance_left, distance_right)
+        actual_expected_steering = self.expected_steering_calculator.calculate_expected_steering(distance_left, distance_right)
 
         # then
         expected_expected_steering = - self.__getAbsoluteDistanceDifferenceAsProportionOfMaxSteeringErrorDistance(distance_right, distance_left)
@@ -122,7 +122,7 @@ class ExpectedSteeringCalculatorUnitTest(unittest.TestCase):
         distance_right = 75
 
         # when
-        actual_expected_steering = self.expected_steering_calculator.calculateExpectedSteering(distance_left, distance_right)
+        actual_expected_steering = self.expected_steering_calculator.calculate_expected_steering(distance_left, distance_right)
 
         # then
         expected_expected_steering = self.__getAbsoluteDistanceDifferenceAsProportionOfMaxSteeringErrorDistance(distance_right, distance_left)

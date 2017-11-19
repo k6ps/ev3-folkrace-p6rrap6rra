@@ -44,7 +44,7 @@ class Folkracer(Thread):
             self.settings.getMinSideDistance(),
             self.settings.getMaxSteeringError()
         )
-        self._stop_requested = False
+        self.stop_requested = False
         self.setDaemon(True)
         self.enterAwaitingStartState()
 
@@ -66,11 +66,11 @@ class Folkracer(Thread):
 
     def run(self):
         logging.debug('Folkracer started')
-        time_frame_length_seconds = 0.001 * self.settings.getTimeFrameMilliseconds()
-        while (self._stop_requested == False):
+        __time_frame_length_seconds = 0.001 * self.settings.getTimeFrameMilliseconds()
+        while (self.stop_requested == False):
             if (State.RUNNING == self.getState()):
-                self._performRunningCycle()
-            time.sleep(time_frame_length_seconds)
+                self.__perform_running_cycle()
+            time.sleep(__time_frame_length_seconds)
         logging.debug('Folkracer stopped')
 
     def getState(self):
@@ -80,23 +80,27 @@ class Folkracer(Thread):
         self.enterStartingState()
 
     def stop(self):
-        self._stop_requested == True
+        self.stop_requested == True
 
-    def _performRunningCycle(self):
-        bumper_statuses = self.bumpers.getBumperStatuses()
-        distances = self.distances.getDistances()
-        logging.debug('distances = ' + str(distances))
-        desired_steering = self.calculate_desired_steering(distances)
-        logging.debug('desired steering = ' + str(desired_steering))
-        self.steering.setSteeringPosition(round(desired_steering, 2))
+    def __perform_running_cycle(self):
+        __bumper_statuses = self.bumpers.getBumperStatuses()
+        __distances = self.distances.getDistances()
+        logging.debug('distances = ' + str(__distances))
+        __desired_steering = self.__calculate_desired_steering(__distances)
+        logging.debug('desired steering = ' + str(__desired_steering))
+        self.steering.setSteeringPosition(round(__desired_steering, 2))
         self.engine.setSpeed(100)
 
-    def calculate_desired_steering(self, distances):
-        expected_steering = self.expected_steering_calculator.calculateExpectedSteering(
+    def __calculate_desired_steering(self, distances):
+        __expected_steering = self.expected_steering_calculator.calculate_expected_steering(
             distances['left'],
             distances['right']
         )
-        return expected_steering
+        logging.debug('expected steering = ' + str(__expected_steering))
+        __actual_steering = self.steering.getCurrentSteeringPosition()
+        logging.debug('actual steering = ' + str(__actual_steering))
+
+        return __expected_steering
 
 
 class ExpectedSteeringCalculator(object):
@@ -107,20 +111,69 @@ class ExpectedSteeringCalculator(object):
         self.min_side_distance = min_side_distance
         self.max_steering_error = max_steering_error
 
-    def calculateExpectedSteering(self, left_distance, right_distance):
+    def calculate_expected_steering(self, left_distance, right_distance):
         if (left_distance < self.min_side_distance and right_distance > self.min_side_distance):
-            steering_error = self.max_steering_error
+            __expected_steering = self.max_steering_error
         elif (right_distance < self.min_side_distance and left_distance > self.min_side_distance):
-            steering_error = -self.max_steering_error
+            __expected_steering = -self.max_steering_error
         elif (right_distance > self.max_side_distance and left_distance > self.max_side_distance):
-            steering_error = 0
+            __expected_steering = 0
         elif (right_distance > self.max_side_distance):
-            steering_error = self.norm_side_distance - left_distance
+            __expected_steering = self.norm_side_distance - left_distance
         elif (left_distance > self.max_side_distance):
-            steering_error = right_distance - self.norm_side_distance
+            __expected_steering = right_distance - self.norm_side_distance
         else:
-            steering_error = right_distance - left_distance
-        return int((steering_error) * 100 / self.max_steering_error)
+            __expected_steering = right_distance - left_distance
+        return int((__expected_steering) * 100 / self.max_steering_error)
 
 
+class SteeringPIDCalculator(object):
 
+    def __init__(self):
+        self.proportional_gain = 1.2
+        self.integral_gain = 1.0
+        self.derivative_gain = 0.001
+        self.integral_term_limit = 20.0
+        self.proportional_term = 0.0
+        self.integral_term = 0.0
+        self.derivative_term = 0.0
+        self.last_error = 0.0
+        self.current_time = time.time()
+        self.last_time = self.current_time
+        self.set_point = 0.0
+
+    def set_set_point(self, set_point):
+        self.set_point = set_point
+
+    def reset(self):
+        self.proportional_term = 0.0
+        self.integral_term = 0.0
+        self.derivative_term = 0.0
+        self.last_error = 0.0
+        self.current_time = time.time()
+        self.last_time = self.current_time
+        self.set_point = 0.0
+
+    def calculate(self, feedback_value):
+        __error = self.set_point - feedback_value
+
+        self.current_time = time.time()
+        __delta_time = self.current_time - self.last_time
+        __delta_error = __error - self.last_error
+
+        self.proportional_term = self.proportional_gain * __error
+        self.integral_term += __error * __delta_time
+
+        if (self.integral_term < -self.integral_term_limit):
+            self.integral_term = -self.integral_term_limit
+        elif (self.integral_term > self.integral_term_limit):
+            self.integral_term = self.integral_term_limit
+
+        self.derivative_term = 0.0
+        if (__delta_time > 0):
+            self.derivative_term = __delta_error / __delta_time
+
+        self.last_time = self.current_time
+        self.last_error = __error
+
+        return self.proportional_term + (self.integral_gain * self.integral_term) + (self.derivative_gain * self.derivative_term)

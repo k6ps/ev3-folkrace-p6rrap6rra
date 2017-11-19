@@ -28,7 +28,7 @@ class FolkracerUnitTest(unittest.TestCase):
         self.lights_and_sounds = MagicMock()
         self.folkracer = Folkracer(self.steering, self.engine, self.distances, self.bumpers, self.buttons, self.settings, MagicMock(), MagicMock(), self.lights_and_sounds)
         self.folkracer.expected_steering_calculator = MagicMock()
-        self.folkracer.expected_steering_calculator.calculateExpectedSteering.return_value = 0
+        self.folkracer.expected_steering_calculator.calculate_expected_steering.return_value = 0
         self.folkracer.start()
 
     def tearDown(self):
@@ -179,7 +179,7 @@ class FolkracerUnitTest(unittest.TestCase):
         time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
 
         # then
-        self.__assertCloseEnough(test_frame_count, self.folkracer.expected_steering_calculator.calculateExpectedSteering.call_count, 2)
+        self.__assertCloseEnough(test_frame_count, self.folkracer.expected_steering_calculator.calculate_expected_steering.call_count, 2)
 
 if __name__ == '__main__':
     unittest.main()
