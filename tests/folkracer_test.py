@@ -3,15 +3,12 @@ import time
 from unittest.mock import MagicMock
 from folkracer import Folkracer, State
 
+FRAME_COUNT_TEST_ERROR_TOLERANCE = 2
+TEST_TIME_FRAME_MILLISECONDS = 100
+
 
 class FolkracerUnitTest(unittest.TestCase):
 
-    def __assertCloseEnough(self, expected, actual, allowed_margin):
-        min_allowed = expected - allowed_margin
-        max_allowed = expected + allowed_margin
-        self.assertTrue(actual <= max_allowed, msg = 'actual (' + str(actual) + ') > expected + allowed_margin (' + str(max_allowed) + ')')
-        self.assertTrue(actual >= min_allowed, msg = 'actual (' + str(actual) + ') < expected - allowed_margin (' + str(min_allowed) + ')')
-    
     def setUp(self):
         self.settings = MagicMock()
         self.steering = MagicMock()
@@ -23,7 +20,7 @@ class FolkracerUnitTest(unittest.TestCase):
         }
         self.bumpers = MagicMock()
         self.buttons = MagicMock()
-        self.time_frame_milliseconds = 100
+        self.time_frame_milliseconds = TEST_TIME_FRAME_MILLISECONDS
         self.settings.getTimeFrameMilliseconds.return_value = self.time_frame_milliseconds
         self.lights_and_sounds = MagicMock()
         self.folkracer = Folkracer(self.steering, self.engine, self.distances, self.bumpers, self.buttons, self.settings, MagicMock(), MagicMock(), self.lights_and_sounds)
@@ -81,105 +78,116 @@ class FolkracerUnitTest(unittest.TestCase):
 
     def test_shouldNotifyPredefinedSecondsWhenStartButtonPressed(self):
         #given
-        start_delay_seconds = 3
-        self.settings.getStartDelaySeconds.return_value = start_delay_seconds
+        __start_delay_seconds = 3
+        self.settings.getStartDelaySeconds.return_value = __start_delay_seconds
 
         #when
         self.folkracer.startButtonPressed()
-        time.sleep(start_delay_seconds + 1)
+        time.sleep(__start_delay_seconds + 1)
         
         #then
-        self.assertEqual(start_delay_seconds, self.lights_and_sounds.startDelaySecond.call_count)
+        self.assertEqual(__start_delay_seconds, self.lights_and_sounds.startDelaySecond.call_count)
 
     def test_shouldBeOnRunningModeWhenPredefinedStartingSecondsArePassed(self):
         # given
-        start_delay_seconds = 1
-        self.settings.getStartDelaySeconds.return_value = start_delay_seconds
+        __start_delay_seconds = 1
+        self.settings.getStartDelaySeconds.return_value = __start_delay_seconds
         
         # when
         self.folkracer.startButtonPressed()
-        time.sleep(start_delay_seconds + 1)
+        time.sleep(__start_delay_seconds + 1)
 
         # then
         self.assertEqual(State.RUNNING, self.folkracer.getState())
 
     def test_shouldReadDistancesOnceEveryTimeframeWhenInRunningState(self):
         # given
-        test_frame_count = 7
+        __test_frame_count = 7
 
         # when
         self.folkracer.enterRunningState()
-        time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
+        time.sleep(__test_frame_count * self.time_frame_milliseconds * 0.001)
 
         # then
-        self.__assertCloseEnough(test_frame_count, self.distances.getDistances.call_count, 2)
-        
+        self.assertAlmostEqual(
+            __test_frame_count,
+            self.distances.getDistances.call_count,
+            delta=FRAME_COUNT_TEST_ERROR_TOLERANCE
+        )
+
     def test_shouldNotReadDistancesOnceEveryTimeframeWhenInStartingState(self):
         # given
-        test_frame_count = 7
+        __test_frame_count = 7
 
         # when
         self.folkracer.enterStartingState()
-        time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
+        time.sleep(__test_frame_count * self.time_frame_milliseconds * 0.001)
 
         # then
         self.distances.getDistances.assert_not_called()
         
     def test_shouldNotReadDistancesOnceEveryTimeframeWhenInAwaitingStartState(self):
         # given
-        test_frame_count = 7
+        __test_frame_count = 7
 
         # when
         self.folkracer.enterAwaitingStartState()
-        time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
+        time.sleep(__test_frame_count * self.time_frame_milliseconds * 0.001)
 
         # then
         self.distances.getDistances.assert_not_called()
 
     def test_shouldCheckBumpersOnceEveryTimeframeWhenInRunningState(self):
         # given
-        test_frame_count = 7
+        __test_frame_count = 7
 
         # when
         self.folkracer.enterRunningState()
-        time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
+        time.sleep(__test_frame_count * self.time_frame_milliseconds * 0.001)
 
         # then
-        self.__assertCloseEnough(test_frame_count, self.bumpers.getBumperStatuses.call_count, 2)
+        self.assertAlmostEqual(
+            __test_frame_count,
+            self.bumpers.getBumperStatuses.call_count,
+            delta=FRAME_COUNT_TEST_ERROR_TOLERANCE
+        )
 
     def test_shouldNotCheckBumpersOnceEveryTimeframeWhenInStartingState(self):
         # given
-        test_frame_count = 7
+        __test_frame_count = 7
 
         # when
         self.folkracer.enterStartingState()
-        time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
+        time.sleep(__test_frame_count * self.time_frame_milliseconds * 0.001)
 
         # then
         self.bumpers.getBumperStatuses.assert_not_called()
 
-
     def test_shouldNotCheckBumpersOnceEveryTimeframeWhenInAwaitingStartState(self):
         # given
-        test_frame_count = 7
+        __test_frame_count = 7
 
         # when
         self.folkracer.enterAwaitingStartState()
-        time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
+        time.sleep(__test_frame_count * self.time_frame_milliseconds * 0.001)
 
         # then
         self.bumpers.getBumperStatuses.assert_not_called()
 
     def test_shouldCalculateExpectedSteeringOnceEveryTimeframeWhenInRunningState(self):
         # given
-        test_frame_count = 7
+        __test_frame_count = 7
 
         # when
         self.folkracer.enterRunningState()
-        time.sleep(test_frame_count * self.time_frame_milliseconds * 0.001)
+        time.sleep(__test_frame_count * self.time_frame_milliseconds * 0.001)
 
         # then
-        self.__assertCloseEnough(test_frame_count, self.folkracer.expected_steering_calculator.calculate_expected_steering.call_count, 2)
+        self.assertAlmostEqual(
+            __test_frame_count,
+            self.folkracer.expected_steering_calculator.calculate_expected_steering.call_count,
+            delta=FRAME_COUNT_TEST_ERROR_TOLERANCE
+        )
 
 if __name__ == '__main__':
     unittest.main()
