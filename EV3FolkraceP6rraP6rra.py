@@ -28,7 +28,7 @@ class Settings(object):
         return False
 
     def getRightDistanceSensorAddress(self):
-        return 'in1'
+        return 'in3'
 
     def getLeftDistanceSensorAddress(self):
         return 'in2'
@@ -40,13 +40,13 @@ class Settings(object):
         return 'outB'
 
     def getMotor2Address(self):
-        return 'outC'
+        return 'outD'
 
     def getMotorSpeedFactor(self):
         return -10
 
     def getSteeringMotorAddress(self):
-        return 'outA'
+        return 'outC'
 
     def getSteeringMotorSpeedFactor(self):
         return 10
@@ -56,6 +56,9 @@ class Settings(object):
 
     def getSteeringMaxRange(self):
         return 37
+
+    def getSteeringMotorPositionFactor(self):
+        return -1
 
     def getMaxSideDistance(self):
         return 155
@@ -75,7 +78,14 @@ if __name__ == "__main__":
     ev3.Sound.speak('Loading').wait()
     settings = Settings()
     bumpers = Bumpers() if (settings.hasFrontBumper()) else None
-    folkracer = Folkracer(Steering(settings), Engine(settings), Distances(settings), bumpers, Buttons(), settings, None, None, LightsAndSounds())
+    steering = Steering(
+        settings.getSteeringMotorAddress(),
+        settings.getSteeringMotorSpeedFactor(),
+        settings.getSteeringSpeed(),
+        settings.getSteeringMaxRange(),
+        settings.getSteeringMotorPositionFactor()
+    )
+    folkracer = Folkracer(steering, Engine(settings), Distances(settings), bumpers, Buttons(), settings, None, None, LightsAndSounds())
     folkracer.start()
     folkracer.join()
     logging.info('Shutting down.')
