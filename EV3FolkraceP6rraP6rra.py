@@ -24,6 +24,9 @@ class Settings(object):
     def hasFrontBumper(self):
         return False
 
+    def getFrontBumperAddress(self):
+        return 'in4'
+
     def hasFrontDistanceSensor(self):
         return False
 
@@ -52,7 +55,7 @@ class Settings(object):
         return 10
 
     def getSteeringSpeed(self):
-        return 5
+        return 10
 
     def getSteeringMaxRange(self):
         return 37
@@ -61,23 +64,25 @@ class Settings(object):
         return -1
 
     def getMaxSideDistance(self):
-        return 155
+        return 150
 
     def getMinSideDistance(self):
         return 10
 
     def getNormSideDistance(self):
-        return 90
+        return 50
 
     def getMaxSteeringError(self):
-        return 100
+        return 50
 
 
 if __name__ == "__main__":
     logging.info('Loading')
-    ev3.Sound.speak('Loading').wait()
+    ev3.Sound.beep()
+    ev3.Sound.beep()
+    ev3.Sound.beep()
     settings = Settings()
-    bumpers = Bumpers() if (settings.hasFrontBumper()) else None
+    bumpers = Bumpers(settings.getFrontBumperAddress()) if (settings.hasFrontBumper()) else None
     steering = Steering(
         settings.getSteeringMotorAddress(),
         settings.getSteeringMotorSpeedFactor(),
@@ -89,4 +94,6 @@ if __name__ == "__main__":
     folkracer.start()
     folkracer.join()
     logging.info('Shutting down.')
-    ev3.Sound.speak('Shutting down').wait()
+    ev3.Sound.beep()
+    ev3.Sound.beep()
+    ev3.Sound.beep()
