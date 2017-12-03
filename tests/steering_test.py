@@ -7,9 +7,10 @@ from steering import Steering
 TEST_STEERING_MAX_RANGE = 47
 TEST_STEERING_SPEED = 10
 TEST_STEERING_MOTOR_ADDRESS = 'steering_motor'
-TEST_STEERING_MOTOR_POSITION_FACTOR = 1
+TEST_STEERING_MOTOR_POSITION_FACTOR = -1
 TEST_STEERING_MOTOR_SPEED_FACTOR = 123
 EXPECTED_STEERING_MOTOR_SPEED = TEST_STEERING_MOTOR_SPEED_FACTOR * TEST_STEERING_SPEED
+EXPECTED_STEERING_MOTOR_STOP_ACTION = 'coast'
 
 
 class SteeringUnitTest(unittest.TestCase):
@@ -102,7 +103,7 @@ class SteeringUnitTest(unittest.TestCase):
         self.steering.steering_motor.run_to_rel_pos.assert_called_with(
             position_sp=__expected_steering_motor_turn,
             speed_sp=EXPECTED_STEERING_MOTOR_SPEED,
-            stop_action='hold'
+            stop_action=EXPECTED_STEERING_MOTOR_STOP_ACTION
         )
 
     def test_should_turn_steering_motor_left_by_correct_amount_when_steering_motor_position_was_zero(self):
@@ -115,14 +116,11 @@ class SteeringUnitTest(unittest.TestCase):
         self.steering.set_steering_position(__test_steering_position)
 
         # then
-        __expected_steering_motor_turn = self.__get_expected_steering_motor_turn(
-            __test_steering_motor_initial_position,
-            __test_steering_position
-        )
-        self.steering.steering_motor.run_to_rel_pos.assert_called_with(
+        __expected_steering_motor_turn = self.__get_expected_steering_motor_turn(__test_steering_position)
+        self.steering.steering_motor.run_to_abs_pos.assert_called_with(
             position_sp=__expected_steering_motor_turn,
             speed_sp=EXPECTED_STEERING_MOTOR_SPEED,
-            stop_action='hold'
+            stop_action=EXPECTED_STEERING_MOTOR_STOP_ACTION
         )
 
     def test_should_turn_steering_motor_right_by_correct_amount_when_steering_motor_position_was_zero(self):
@@ -135,14 +133,11 @@ class SteeringUnitTest(unittest.TestCase):
         self.steering.set_steering_position(__test_steering_position)
 
         # then
-        __expected_steering_motor_turn = self.__get_expected_steering_motor_turn(
-            __test_steering_motor_initial_position,
-            __test_steering_position
-        )
-        self.steering.steering_motor.run_to_rel_pos.assert_called_with(
+        __expected_steering_motor_turn = self.__get_expected_steering_motor_turn(__test_steering_position)
+        self.steering.steering_motor.run_to_abs_pos.assert_called_with(
             position_sp=__expected_steering_motor_turn,
             speed_sp=EXPECTED_STEERING_MOTOR_SPEED,
-            stop_action='hold'
+            stop_action=EXPECTED_STEERING_MOTOR_STOP_ACTION
         )
 
     def test_should_turn_steering_motor_left_by_correct_amount_when_steering_motor_position_was_in_left(self):
@@ -155,14 +150,11 @@ class SteeringUnitTest(unittest.TestCase):
         self.steering.set_steering_position(__test_steering_position)
 
         # then
-        __expected_steering_motor_turn = self.__get_expected_steering_motor_turn(
-            __test_steering_motor_initial_position,
-            __test_steering_position
-        )
-        self.steering.steering_motor.run_to_rel_pos.assert_called_with(
+        __expected_steering_motor_turn = self.__get_expected_steering_motor_turn(__test_steering_position)
+        self.steering.steering_motor.run_to_abs_pos.assert_called_with(
             position_sp=__expected_steering_motor_turn,
             speed_sp=EXPECTED_STEERING_MOTOR_SPEED,
-            stop_action='hold'
+            stop_action=EXPECTED_STEERING_MOTOR_STOP_ACTION
         )
 
     def test_should_turn_steering_motor_left_by_correct_amount_when_steering_motor_position_was_in_right(self):
@@ -175,14 +167,11 @@ class SteeringUnitTest(unittest.TestCase):
         self.steering.set_steering_position(__test_steering_position)
 
         # then
-        __expected_steering_motor_turn = self.__get_expected_steering_motor_turn(
-            __test_steering_motor_initial_position,
-            __test_steering_position
-        )
-        self.steering.steering_motor.run_to_rel_pos.assert_called_with(
+        __expected_steering_motor_turn = self.__get_expected_steering_motor_turn(__test_steering_position)
+        self.steering.steering_motor.run_to_abs_pos.assert_called_with(
             position_sp=__expected_steering_motor_turn,
             speed_sp=EXPECTED_STEERING_MOTOR_SPEED,
-            stop_action='hold'
+            stop_action=EXPECTED_STEERING_MOTOR_STOP_ACTION
         )
 
     def test_should_turn_steering_motor_right_by_correct_amount_when_steering_motor_position_was_in_right(self):
@@ -195,14 +184,11 @@ class SteeringUnitTest(unittest.TestCase):
         self.steering.set_steering_position(__test_steering_position)
 
         # then
-        __expected_steering_motor_turn = self.__get_expected_steering_motor_turn(
-            __test_steering_motor_initial_position,
-            __test_steering_position
-        )
-        self.steering.steering_motor.run_to_rel_pos.assert_called_with(
+        __expected_steering_motor_turn = self.__get_expected_steering_motor_turn(__test_steering_position)
+        self.steering.steering_motor.run_to_abs_pos.assert_called_with(
             position_sp=__expected_steering_motor_turn,
             speed_sp=EXPECTED_STEERING_MOTOR_SPEED,
-            stop_action='hold'
+            stop_action=EXPECTED_STEERING_MOTOR_STOP_ACTION
         )
 
     def test_should_turn_steering_motor_right_by_correct_amount_when_steering_motor_position_was_in_left(self):
@@ -215,20 +201,17 @@ class SteeringUnitTest(unittest.TestCase):
         self.steering.set_steering_position(__test_steering_position)
 
         # then
-        __expected_steering_motor_turn = self.__get_expected_steering_motor_turn(
-            __test_steering_motor_initial_position,
-            __test_steering_position
-        )
-        self.steering.steering_motor.run_to_rel_pos.assert_called_with(
+        __expected_steering_motor_turn = self.__get_expected_steering_motor_turn(__test_steering_position)
+        self.steering.steering_motor.run_to_abs_pos.assert_called_with(
             position_sp=__expected_steering_motor_turn,
             speed_sp=EXPECTED_STEERING_MOTOR_SPEED,
-            stop_action='hold'
+            stop_action=EXPECTED_STEERING_MOTOR_STOP_ACTION
         )
 
     @staticmethod
-    def __get_expected_steering_motor_turn(initial_motor_position, desired_steering_position):
+    def __get_expected_steering_motor_turn(desired_steering_position):
         return TEST_STEERING_MOTOR_POSITION_FACTOR * (
-            int(desired_steering_position * TEST_STEERING_MAX_RANGE / 100) - initial_motor_position
+            int(desired_steering_position * TEST_STEERING_MAX_RANGE / 100)
         )
 
     @staticmethod

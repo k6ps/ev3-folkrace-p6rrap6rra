@@ -38,32 +38,33 @@ class Steering:
         self.steering_motor.stop(stop_action='hold')
 
     def initialize(self):
-        logging.debug('initialize: beginning steering motor position = '+ str(self.steering_motor.position))
+        logging.debug('Steering: initialize: beginning steering motor position = '+ str(self.steering_motor.position))
         self.__experimentally_find_max_left_position()
-        logging.debug('initialize: steering motor position after experimentally turning max left = '+ str(self.steering_motor.position))
+        logging.debug('Steering: initialize: steering motor position after experimentally turning max left = '+ str(self.steering_motor.position))
         self.steering_motor.run_to_rel_pos(
             position_sp=(self.steering_motor_position_factor * self.steering_max_range),
             speed_sp=self.steering_motor_speed,
-            stop_action='hold'
+            stop_action='coast'
         )
-        self.steering_motor.wait_while('running')
-        logging.debug('initialize: ending steering motor position = '+ str(self.steering_motor.position))
+        self.steering_motor.wait_while('running', timeout=1000)
+        self.steering_motor.stop(stop_action='coast')
+        logging.debug('Steering: initialize: ending steering motor position = '+ str(self.steering_motor.position))
         self.steering_motor.reset()
-        logging.debug('initialize: steering motor position after reset = '+ str(self.steering_motor.position))
+        logging.debug('Steering: initialize: steering motor position after reset = '+ str(self.steering_motor.position))
 
     def get_current_steering_position(self):
-        logging.debug('get_current_steering_position: steering motor position = '+ str(self.steering_motor.position))
-        __current_steering_position = int(self.steering_motor.position * 100 / self.steering_max_range)
-        logging.debug('get_current_steering_position: steering position = '+ str(__current_steering_position))
+        logging.debug('Steering: get_current_steering_position: steering motor position = '+ str(self.steering_motor.position))
+        __current_steering_position = self.steering_motor_position_factor * int(self.steering_motor.position * 100 / self.steering_max_range)
+        logging.debug('Steering: get_current_steering_position: steering position = '+ str(__current_steering_position))
         return __current_steering_position
 
     def set_steering_position(self, desired_steering_position):
-        logging.debug('set_steering_position: desired_steering_position = ' + str(desired_steering_position))
-        logging.debug('set_steering_position: steering motor position = ' + str(self.steering_motor.position))
-        __desired_steering = int(desired_steering_position * self.steering_max_range / 100) - self.steering_motor.position
-        logging.debug('set_steering_position: desired_steering = ' + str(__desired_steering))
-        self.steering_motor.run_to_rel_pos(
-            position_sp=(self.steering_motor_position_factor * __desired_steering),
+        logging.debug('Steering: set_steering_position: desired_steering_position = ' + str(desired_steering_position))
+        logging.debug('Steering: set_steering_position: steering motor position = ' + str(self.steering_motor.position))
+        __desired_steering = self.steering_motor_position_factor * int(desired_steering_position * self.steering_max_range / 100)
+        logging.debug('Steering: set_steering_position: desired_steering = ' + str(__desired_steering))
+        self.steering_motor.run_to_abs_pos(
+            position_sp=__desired_steering,
             speed_sp=self.steering_motor_speed,
-            stop_action='hold'
+            stop_action='coast'
         )
