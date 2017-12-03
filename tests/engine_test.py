@@ -47,3 +47,35 @@ class EngineUnitTest(unittest.TestCase):
         _expected_speed = 65 * 123
         self.engine.motor_1.run_forever.assert_called_once_with(speed_sp = _expected_speed)
         self.engine.motor_2.run_forever.assert_called_once_with(speed_sp = _expected_speed)
+
+    def test_should_stop_motors_with_coast_when_stop_called(self):
+        # given
+        self.settings.getMotor1Address.return_value = 'a_motor'
+        self.settings.getMotor2Address.return_value = 'another_motor'
+        self.settings.getMotorSpeedFactor.return_value = 123
+        self.engine = Engine(self.settings)
+        self.engine.motor_1 = MagicMock()
+        self.engine.motor_2 = MagicMock()
+
+        # when
+        self.engine.stop()
+
+        # then
+        self.engine.motor_1.stop.assert_called_once_with(stop_action = 'coast')
+        self.engine.motor_2.stop.assert_called_once_with(stop_action = 'coast')
+
+    def test_should_stop_motors_with_brake_when_brake_called(self):
+        # given
+        self.settings.getMotor1Address.return_value = 'a_motor'
+        self.settings.getMotor2Address.return_value = 'another_motor'
+        self.settings.getMotorSpeedFactor.return_value = 123
+        self.engine = Engine(self.settings)
+        self.engine.motor_1 = MagicMock()
+        self.engine.motor_2 = MagicMock()
+
+        # when
+        self.engine.brake()
+
+        # then
+        self.engine.motor_1.stop.assert_called_once_with(stop_action = 'brake')
+        self.engine.motor_2.stop.assert_called_once_with(stop_action = 'brake')
