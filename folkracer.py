@@ -14,6 +14,7 @@ class StartDelaySecondsRunner(Thread):
 
     def __init__(self, folkracer):
         Thread.__init__(self)
+        self.setName("StartDelaySecondsRunner")
         self.folkracer = folkracer
 
     def run(self):
@@ -28,6 +29,8 @@ class Folkracer(Thread):
 
     def __init__(self, steering, engine, distances, bumpers, buttons, settings, orientation, log, lights_and_sounds):
         Thread.__init__(self)
+        self.setDaemon(True)
+        self.setName("Folkracer")
         self.steering = steering
         self.steering.initialize()
         self.steering_pid_calculator = SteeringPIDCalculator()
@@ -47,28 +50,27 @@ class Folkracer(Thread):
             self.settings.getMaxSteeringError()
         )
         self.stop_requested = False
-        self.setDaemon(True)
         self.enterAwaitingStartState()
 
     def enterAwaitingStartState(self):
-        logging.debug('Folkracer: Entering AWAITING_START state')
+        logging.debug('Entering AWAITING_START state')
         self.state = State.AWAITING_START
         self.buttons.start()
         self.buttons.addStartButtonListener(self)
 
     def enterRunningState(self):
-        logging.debug('Folkracer: Entering RUNNING state')
+        logging.debug('Entering RUNNING state')
         self.state = State.RUNNING
         self.buttons.addStopButtonListener(self)
 
     def enterStartingState(self):
-        logging.debug('Folkracer: Entering STARTING state')
+        logging.debug('Entering STARTING state')
         self.state = State.STARTING
         self.buttons.removeStartButtonListener()
         StartDelaySecondsRunner(self).start()
 
     def run(self):
-        logging.debug('Folkracer: Folkracer started')
+        logging.debug('Folkracer started')
         while (not self.stop_requested):
             cycle_start_time = self.__get_current_time_milliseconds()
             if (State.RUNNING == self.getState()):
@@ -76,7 +78,7 @@ class Folkracer(Thread):
             self.__wait_until_end_of_cycle_time(cycle_start_time)
         self.engine.stop()
         self.buttons.stop()
-        logging.debug('Folkracer: Folkracer stopped')
+        logging.debug('Folkracer stopped')
 
     def getState(self):
         return self.state
@@ -88,22 +90,22 @@ class Folkracer(Thread):
         self.stop()
 
     def stop(self):
-        logging.debug("Folkracer: Stop requested")
+        logging.debug("Stop requested")
         self.stop_requested = True
 
     def __perform_running_cycle(self):
-        logging.info('Folkracer: running cycle starts')
+        logging.info('Running cycle starts')
         if (self.settings.hasFrontBumper() and self.bumpers.getBumperStatuses()):
-            logging.debug('Folkracer: front bumper activated')
+            logging.debug('Front bumper activated')
             self.engine.brake()
             self.stop()
-        logging.debug('Folkracer: getting distances')
+        logging.debug('Getting distances')
         __distances = self.distances.getDistances()
-        logging.debug('Folkracer: distances = ' + str(__distances))
+        logging.debug('Distances = ' + str(__distances))
         __desired_steering = int(self.__calculate_desired_steering(__distances))
-        logging.debug('Folkracer: desired steering = ' + str(__desired_steering))
+        logging.debug('Desired steering = ' + str(__desired_steering))
         self.steering.set_steering_position(__desired_steering)
-        logging.debug('Folkracer: setting engine speed')
+        logging.debug('Setting engine speed')
         self.engine.setSpeed(50)
 
     def __wait_until_end_of_cycle_time(self, cycle_start_time):
@@ -120,9 +122,9 @@ class Folkracer(Thread):
             distances['left'],
             distances['right']
         )
-        logging.debug('Folkracer: expected steering = ' + str(__expected_steering))
+        logging.debug('Expected steering = ' + str(__expected_steering))
         __actual_steering = self.steering.get_current_steering_position()
-        logging.debug('Folkracer: actual steering = ' + str(__actual_steering))
+        logging.debug('Actual steering = ' + str(__actual_steering))
 
         self.steering_pid_calculator.set_set_point(__expected_steering)
         __desired_steering = __expected_steering + self.steering_pid_calculator.calculate(__actual_steering)

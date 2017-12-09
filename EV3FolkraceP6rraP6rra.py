@@ -17,7 +17,7 @@ queue_handler = logging.handlers.QueueHandler(log_message_queue)
 file_handler = logging.FileHandler(filename='folkracer.log')
 file_handler.setFormatter(logging.Formatter('%(asctime)s [%(threadName)s]: %(message)s'))
 log_message_queue_listener = logging.handlers.QueueListener(log_message_queue, file_handler)
-logging.basicConfig(level=logging.INFO, handlers=[queue_handler])
+logging.basicConfig(level=logging.DEBUG, handlers=[queue_handler])
 
 
 class Settings(object):

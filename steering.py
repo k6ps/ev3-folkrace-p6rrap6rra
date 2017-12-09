@@ -7,7 +7,7 @@ INITIALIZE_EXPERIMENTAL_TURN_POSITION_SP = -5
 INITIALIZE_EXPERIMENTAL_TURN_MAX_POSITION_HAS_NOT_CHANGED_CYCLE_COUNT = 5
 
 
-class Steering:
+class Steering(object):
 
     def __init__(self, steering_motor_address, steering_motor_speed_factor, steering_speed, steering_max_range, steering_motor_position_factor):
         self.steering_motor_speed_factor = steering_motor_speed_factor
