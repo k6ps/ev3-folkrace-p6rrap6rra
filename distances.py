@@ -13,9 +13,9 @@ class Distances(object):
 
     def getDistances(self):
         distances = {
-            'right':self.distance_sensor_right.value(),
-            'left':self.distance_sensor_left.value()
+            'right':int(self.distance_sensor_right.value() * 0.1),
+            'left':int(self.distance_sensor_left.value() * 0.1)
         }
         if (self.distance_sensor_front is not None):
-            distances['front'] = self.distance_sensor_front.value()
+            distances['front'] = int(self.distance_sensor_front.value() * 0.1)
         return distances

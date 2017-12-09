@@ -62,9 +62,9 @@ class DistancesUnitTest(unittest.TestCase):
         actual_distances = self.distances.getDistances()
 
         # then
-        self.assertEqual(111, actual_distances.get('right'))
-        self.assertEqual(222, actual_distances.get('left'))
-        self.assertEqual(333, actual_distances.get('front'))
+        self.assertEqual(11, actual_distances.get('right'))
+        self.assertEqual(22, actual_distances.get('left'))
+        self.assertEqual(33, actual_distances.get('front'))
 
     def test_shouldReturnCorrectDistanceValuesWhenFrontSensorDisabled(self):
         # given
@@ -79,7 +79,7 @@ class DistancesUnitTest(unittest.TestCase):
         actual_distances = self.distances.getDistances()
 
         # then
-        self.assertEqual(111, actual_distances.get('right'))
-        self.assertEqual(222, actual_distances.get('left'))
+        self.assertEqual(11, actual_distances.get('right'))
+        self.assertEqual(22, actual_distances.get('left'))
         self.assertFalse('front' in actual_distances)
     
