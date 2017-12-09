@@ -2,6 +2,8 @@
 
 import ev3dev.ev3 as ev3
 import logging
+import logging.handlers
+import queue
 from folkracer import Folkracer
 from steering import Steering
 from buttons import Buttons
@@ -10,13 +12,18 @@ from bumpers import Bumpers
 from engine import Engine
 from lights_and_sounds import LightsAndSounds
 
-logging.basicConfig(format='%(asctime)s %(message)s', filename='folkracer.log', level=logging.DEBUG)
+log_message_queue = queue.Queue(-1)
+queue_handler = logging.handlers.QueueHandler(log_message_queue)
+file_handler = logging.FileHandler(filename='folkracer.log')
+file_handler.setFormatter(logging.Formatter('%(asctime)s [%(threadName)s]: %(message)s'))
+log_message_queue_listener = logging.handlers.QueueListener(log_message_queue, file_handler)
+logging.basicConfig(level=logging.INFO, handlers=[queue_handler])
 
 
 class Settings(object):
     
     def getStartDelaySeconds(self):
-        return 5
+        return 2
 
     def getTimeFrameMilliseconds(self):
         return 100
@@ -77,10 +84,10 @@ class Settings(object):
 
 
 if __name__ == "__main__":
+    log_message_queue_listener.start()
     logging.info('Loading')
-    ev3.Sound.beep()
-    ev3.Sound.beep()
-    ev3.Sound.beep()
+    ev3.Sound.beep().wait()
+    ev3.Sound.beep().wait()
     settings = Settings()
     bumpers = Bumpers(settings.getFrontBumperAddress()) if (settings.hasFrontBumper()) else None
     steering = Steering(
@@ -94,6 +101,6 @@ if __name__ == "__main__":
     folkracer.start()
     folkracer.join()
     logging.info('Shutting down.')
-    ev3.Sound.beep()
-    ev3.Sound.beep()
-    ev3.Sound.beep()
+    log_message_queue_listener.stop()
+    ev3.Sound.beep().wait()
+    ev3.Sound.beep().wait()
