@@ -19,6 +19,7 @@ class FolkracerUnitTest(unittest.TestCase):
             'left':55
         }
         self.bumpers = MagicMock()
+        self.bumpers.getBumperStatuses.return_value = False
         self.buttons = MagicMock()
         self.time_frame_milliseconds = TEST_TIME_FRAME_MILLISECONDS
         self.settings.getTimeFrameMilliseconds.return_value = self.time_frame_milliseconds
@@ -26,11 +27,13 @@ class FolkracerUnitTest(unittest.TestCase):
         self.folkracer = Folkracer(self.steering, self.engine, self.distances, self.bumpers, self.buttons, self.settings, MagicMock(), MagicMock(), self.lights_and_sounds)
         self.folkracer.expected_steering_calculator = MagicMock()
         self.folkracer.expected_steering_calculator.calculate_expected_steering.return_value = 0
+        self.folkracer.steering_pid_calculator = MagicMock()
+        self.folkracer.steering_pid_calculator.calculate.return_value = 1
         self.folkracer.start()
 
     def tearDown(self):
-        time.sleep(0.1)
         self.folkracer.stop()
+        self.folkracer.join(timeout=10.0)
 
     def test_shouldInitializeSteeringOnStartup(self):
         #given
@@ -188,6 +191,30 @@ class FolkracerUnitTest(unittest.TestCase):
             self.folkracer.expected_steering_calculator.calculate_expected_steering.call_count,
             delta=FRAME_COUNT_TEST_ERROR_TOLERANCE
         )
+
+    def test_should_stop_engine_when_stop_requested(self):
+        # given
+        self.folkracer.enterRunningState()
+        time.sleep(1)
+
+        # when
+        self.folkracer.stop()
+        time.sleep(1)
+
+        # then
+        self.engine.stop.assert_called()
+
+    def test_should_stop_buttons_when_stop_requested(self):
+        # given
+        self.folkracer.enterRunningState()
+        time.sleep(1)
+
+        # when
+        self.folkracer.stop()
+        time.sleep(1)
+
+        # then
+        self.buttons.stop.assert_called()
 
 if __name__ == '__main__':
     unittest.main()

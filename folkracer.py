@@ -30,6 +30,7 @@ class Folkracer(Thread):
         Thread.__init__(self)
         self.steering = steering
         self.steering.initialize()
+        self.steering_pid_calculator = SteeringPIDCalculator()
         self.engine = engine
         self.distances = distances
         self.bumpers = bumpers
@@ -49,29 +50,32 @@ class Folkracer(Thread):
         self.enterAwaitingStartState()
 
     def enterAwaitingStartState(self):
-        logging.debug('Entering AWAITING_START state')
+        logging.debug('Folkracer: Entering AWAITING_START state')
         self.state = State.AWAITING_START
         self.buttons.start()
         self.buttons.addStartButtonListener(self)
 
     def enterRunningState(self):
-        logging.debug('Entering RUNNING state')
+        logging.debug('Folkracer: Entering RUNNING state')
         self.state = State.RUNNING
+        self.buttons.addStopButtonListener(self)
 
     def enterStartingState(self):
-        logging.debug('Entering STARTING state')
+        logging.debug('Folkracer: Entering STARTING state')
         self.state = State.STARTING
         self.buttons.removeStartButtonListener()
         StartDelaySecondsRunner(self).start()
 
     def run(self):
-        logging.debug('Folkracer started')
+        logging.debug('Folkracer: Folkracer started')
         __time_frame_length_seconds = 0.001 * self.settings.getTimeFrameMilliseconds()
-        while (self.stop_requested == False):
+        while (not self.stop_requested):
             if (State.RUNNING == self.getState()):
                 self.__perform_running_cycle()
             time.sleep(__time_frame_length_seconds)
-        logging.debug('Folkracer stopped')
+        self.engine.stop()
+        self.buttons.stop()
+        logging.debug('Folkracer: Folkracer stopped')
 
     def getState(self):
         return self.state
@@ -79,28 +83,44 @@ class Folkracer(Thread):
     def startButtonPressed(self):
         self.enterStartingState()
 
+    def stopButtonPressed(self):
+        self.stop()
+
     def stop(self):
-        self.stop_requested == True
+        logging.debug("Folkracer: Stop requested")
+        self.stop_requested = True
 
     def __perform_running_cycle(self):
-        __bumper_statuses = self.bumpers.getBumperStatuses()
+        logging.debug('Folkracer: running cycle starts')
+        if (self.settings.hasFrontBumper() and self.bumpers.getBumperStatuses()):
+            logging.debug('Folkracer: front bumper activated')
+            self.engine.brake()
+            self.stop()
+        logging.debug('Folkracer: getting distances')
         __distances = self.distances.getDistances()
-        logging.debug('distances = ' + str(__distances))
+        logging.debug('Folkracer: distances = ' + str(__distances))
         __desired_steering = int(self.__calculate_desired_steering(__distances))
-        logging.debug('desired steering = ' + str(__desired_steering))
+        logging.debug('Folkracer: desired steering = ' + str(__desired_steering))
         self.steering.set_steering_position(__desired_steering)
-        self.engine.setSpeed(100)
+        logging.debug('Folkracer: setting engine speed')
+        self.engine.setSpeed(50)
 
     def __calculate_desired_steering(self, distances):
         __expected_steering = self.expected_steering_calculator.calculate_expected_steering(
             distances['left'],
             distances['right']
         )
-        logging.debug('expected steering = ' + str(__expected_steering))
+        logging.debug('Folkracer: expected steering = ' + str(__expected_steering))
         __actual_steering = self.steering.get_current_steering_position()
-        logging.debug('actual steering = ' + str(__actual_steering))
+        logging.debug('Folkracer: actual steering = ' + str(__actual_steering))
 
-        return __expected_steering
+        self.steering_pid_calculator.set_set_point(__expected_steering)
+        __desired_steering = __expected_steering + self.steering_pid_calculator.calculate(__actual_steering)
+        if (__desired_steering < -100):
+            __desired_steering = -100
+        elif (__desired_steering > 100):
+            __desired_steering = 100
+        return __desired_steering
 
 
 class ExpectedSteeringCalculator(object):
@@ -124,7 +144,8 @@ class ExpectedSteeringCalculator(object):
             __expected_steering = right_distance - self.norm_side_distance
         else:
             __expected_steering = right_distance - left_distance
-        return int((__expected_steering) * 100 / self.max_steering_error)
+        return __expected_steering
+
 
 
 class SteeringPIDCalculator(object):
