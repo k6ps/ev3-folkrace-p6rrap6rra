@@ -36,6 +36,7 @@ class Folkracer(Thread):
         self.bumpers = bumpers
         self.buttons = buttons
         self.settings = settings
+        self.time_frame_milliseconds = self.settings.getTimeFrameMilliseconds()
         self.orientation = orientation
         self.log = log
         self.lights_and_sounds = lights_and_sounds
@@ -68,11 +69,11 @@ class Folkracer(Thread):
 
     def run(self):
         logging.debug('Folkracer: Folkracer started')
-        __time_frame_length_seconds = 0.001 * self.settings.getTimeFrameMilliseconds()
         while (not self.stop_requested):
+            cycle_start_time = self.__get_current_time_milliseconds()
             if (State.RUNNING == self.getState()):
                 self.__perform_running_cycle()
-            time.sleep(__time_frame_length_seconds)
+            self.__wait_until_end_of_cycle_time(cycle_start_time)
         self.engine.stop()
         self.buttons.stop()
         logging.debug('Folkracer: Folkracer stopped')
@@ -91,7 +92,7 @@ class Folkracer(Thread):
         self.stop_requested = True
 
     def __perform_running_cycle(self):
-        logging.debug('Folkracer: running cycle starts')
+        logging.info('Folkracer: running cycle starts')
         if (self.settings.hasFrontBumper() and self.bumpers.getBumperStatuses()):
             logging.debug('Folkracer: front bumper activated')
             self.engine.brake()
@@ -104,6 +105,15 @@ class Folkracer(Thread):
         self.steering.set_steering_position(__desired_steering)
         logging.debug('Folkracer: setting engine speed')
         self.engine.setSpeed(50)
+
+    def __wait_until_end_of_cycle_time(self, cycle_start_time):
+        __cycle_end_time = self.__get_current_time_milliseconds()
+        __cycle_time = __cycle_end_time - cycle_start_time
+        if (__cycle_time < self.time_frame_milliseconds):
+            time.sleep((self.time_frame_milliseconds - __cycle_time) * 0.001)
+
+    def __get_current_time_milliseconds(self):
+        return int(round(time.time() * 1000))
 
     def __calculate_desired_steering(self, distances):
         __expected_steering = self.expected_steering_calculator.calculate_expected_steering(
@@ -144,7 +154,7 @@ class ExpectedSteeringCalculator(object):
             __expected_steering = right_distance - self.norm_side_distance
         else:
             __expected_steering = right_distance - left_distance
-        return __expected_steering
+        return int((__expected_steering) * 100 / self.max_steering_error)
 
 
 
