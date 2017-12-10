@@ -2,14 +2,14 @@ import unittest
 import time
 from folkracer import SteeringPIDCalculator
 
-FINAL_PID_OUTPUT_ERROR_TOLERANCE = 0.02
+FINAL_PID_OUTPUT_ERROR_TOLERANCE = 1.0
 CYCLE_LENGTH_SECONDS = 0.01
 
 
 class SteeringPIDCalculatorUnitTest(unittest.TestCase):
 
     def setUp(self):
-        self.steering_pid_calculator = SteeringPIDCalculator()
+        self.steering_pid_calculator = SteeringPIDCalculator(1.7, 0.8, 0.0008, -1)
         self.steering_pid_calculator.reset()
 
     def test_shouldGetOutputToNearZeroWhenSetpointMovedToOne(self):
@@ -144,6 +144,37 @@ class SteeringPIDCalculatorUnitTest(unittest.TestCase):
                 self.steering_pid_calculator.set_set_point(0)
             if (i > 79):
                 self.steering_pid_calculator.set_set_point(2)
+            time.sleep(CYCLE_LENGTH_SECONDS)
+
+        # then
+        self.assertAlmostEqual(0.0, output, delta=FINAL_PID_OUTPUT_ERROR_TOLERANCE)
+
+    def test_shouldGetOutputToNearZeroWhenSetpointMovesConstantlyByBigSteps(self):
+        # given
+        number_of_cycles = 100
+        feedback = 0.0
+        output = 0.0
+
+        # when
+        for i in range(1, number_of_cycles):
+            output = self.steering_pid_calculator.calculate(feedback)
+            feedback += output
+            if (i > 9):
+                self.steering_pid_calculator.set_set_point(10)
+            if (i > 19):
+                self.steering_pid_calculator.set_set_point(20)
+            if (i > 29):
+                self.steering_pid_calculator.set_set_point(30)
+            if (i > 39):
+                self.steering_pid_calculator.set_set_point(20)
+            if (i > 49):
+                self.steering_pid_calculator.set_set_point(10)
+            if (i > 59):
+                self.steering_pid_calculator.set_set_point(-10)
+            if (i > 69):
+                self.steering_pid_calculator.set_set_point(0)
+            if (i > 79):
+                self.steering_pid_calculator.set_set_point(20)
             time.sleep(CYCLE_LENGTH_SECONDS)
 
         # then

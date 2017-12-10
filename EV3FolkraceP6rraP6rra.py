@@ -82,6 +82,18 @@ class Settings(object):
     def getMaxSteeringError(self):
         return 50
 
+    def getSteeringPIDProportionalGain(self):
+        return 1.7
+
+    def getSteeringPIDIntegralGain(self):
+        return 0.8
+
+    def getSteeringPIDDerivativeGain(self):
+        return 0.0008
+
+    def getSteeringPIDIntegralTermLimit(self):
+        return -1.0
+
 
 if __name__ == "__main__":
     log_message_queue_listener.start()

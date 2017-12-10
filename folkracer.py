@@ -33,7 +33,12 @@ class Folkracer(Thread):
         self.setName("Folkracer")
         self.steering = steering
         self.steering.initialize()
-        self.steering_pid_calculator = SteeringPIDCalculator()
+        self.steering_pid_calculator = SteeringPIDCalculator(
+            settings.getSteeringPIDProportionalGain(),
+            settings.getSteeringPIDIntegralGain(),
+            settings.getSteeringPIDDerivativeGain(),
+            settings.getSteeringPIDIntegralTermLimit()
+        )
         self.engine = engine
         self.distances = distances
         self.bumpers = bumpers
@@ -162,11 +167,11 @@ class ExpectedSteeringCalculator(object):
 
 class SteeringPIDCalculator(object):
 
-    def __init__(self):
-        self.proportional_gain = 1.2
-        self.integral_gain = 1.0
-        self.derivative_gain = 0.001
-        self.integral_term_limit = 20.0
+    def __init__(self, proportional_gain, integral_gain, derivative_gain, integral_term_limit):
+        self.proportional_gain = proportional_gain
+        self.integral_gain = integral_gain
+        self.derivative_gain = derivative_gain
+        self.integral_term_limit = integral_term_limit
         self.proportional_term = 0.0
         self.integral_term = 0.0
         self.derivative_term = 0.0
@@ -197,10 +202,11 @@ class SteeringPIDCalculator(object):
         self.proportional_term = self.proportional_gain * __error
         self.integral_term += __error * __delta_time
 
-        if (self.integral_term < -self.integral_term_limit):
-            self.integral_term = -self.integral_term_limit
-        elif (self.integral_term > self.integral_term_limit):
-            self.integral_term = self.integral_term_limit
+        if (self.integral_term_limit > 0):
+            if (self.integral_term < -self.integral_term_limit):
+                self.integral_term = -self.integral_term_limit
+            elif (self.integral_term > self.integral_term_limit):
+                self.integral_term = self.integral_term_limit
 
         self.derivative_term = 0.0
         if (__delta_time > 0):
