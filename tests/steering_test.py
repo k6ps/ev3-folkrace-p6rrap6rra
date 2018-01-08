@@ -21,7 +21,8 @@ class SteeringUnitTest(unittest.TestCase):
             TEST_STEERING_MOTOR_SPEED_FACTOR,
             TEST_STEERING_SPEED,
             TEST_STEERING_MAX_RANGE,
-            TEST_STEERING_MOTOR_POSITION_FACTOR
+            TEST_STEERING_MOTOR_POSITION_FACTOR,
+            True
         )
         self.steering.steering_motor = MagicMock()
 

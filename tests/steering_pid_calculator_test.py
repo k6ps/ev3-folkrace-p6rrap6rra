@@ -2,7 +2,7 @@ import unittest
 import time
 from folkracer import SteeringPIDCalculator
 
-FINAL_PID_OUTPUT_ERROR_TOLERANCE = 1.0
+FINAL_PID_OUTPUT_ERROR_TOLERANCE = 2.0
 CYCLE_LENGTH_SECONDS = 0.01
 
 
@@ -172,8 +172,6 @@ class SteeringPIDCalculatorUnitTest(unittest.TestCase):
             if (i > 59):
                 self.steering_pid_calculator.set_set_point(-10)
             if (i > 69):
-                self.steering_pid_calculator.set_set_point(0)
-            if (i > 79):
                 self.steering_pid_calculator.set_set_point(20)
             time.sleep(CYCLE_LENGTH_SECONDS)
 

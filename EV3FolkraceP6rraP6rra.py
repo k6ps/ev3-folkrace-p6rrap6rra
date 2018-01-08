@@ -38,10 +38,10 @@ class Settings(object):
         return False
 
     def getRightDistanceSensorAddress(self):
-        return 'in3'
+        return 'in2'
 
     def getLeftDistanceSensorAddress(self):
-        return 'in2'
+        return 'in1'
 
     def getFrontDistanceSensorAddress(self):
         return None
@@ -69,6 +69,9 @@ class Settings(object):
 
     def getSteeringMotorPositionFactor(self):
         return -1
+
+    def getDoCenterSteeringWhenInitializing(self):
+        return False
 
     def getMaxSideDistance(self):
         return 150
@@ -107,7 +110,8 @@ if __name__ == "__main__":
         settings.getSteeringMotorSpeedFactor(),
         settings.getSteeringSpeed(),
         settings.getSteeringMaxRange(),
-        settings.getSteeringMotorPositionFactor()
+        settings.getSteeringMotorPositionFactor(),
+        settings.getDoCenterSteeringWhenInitializing()
     )
     folkracer = Folkracer(steering, Engine(settings), Distances(settings), bumpers, Buttons(), settings, None, None, LightsAndSounds())
     folkracer.start()

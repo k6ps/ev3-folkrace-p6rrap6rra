@@ -9,13 +9,14 @@ INITIALIZE_EXPERIMENTAL_TURN_MAX_POSITION_HAS_NOT_CHANGED_CYCLE_COUNT = 5
 
 class Steering(object):
 
-    def __init__(self, steering_motor_address, steering_motor_speed_factor, steering_speed, steering_max_range, steering_motor_position_factor):
+    def __init__(self, steering_motor_address, steering_motor_speed_factor, steering_speed, steering_max_range, steering_motor_position_factor, find_center_on_initialize):
         self.steering_motor_speed_factor = steering_motor_speed_factor
         self.steering_speed = steering_speed
         self.steering_max_range = steering_max_range
         self.steering_motor_position_factor = steering_motor_position_factor
         self.steering_motor = ev3.MediumMotor(steering_motor_address)
         self.steering_motor_speed = self.steering_speed * self.steering_motor_speed_factor
+        self.find_center_on_initialize = find_center_on_initialize
 
     def __experimentally_find_max_left_position(self):
         __previous_position = self.steering_motor.position
@@ -38,17 +39,18 @@ class Steering(object):
         self.steering_motor.stop(stop_action='hold')
 
     def initialize(self):
-        logging.debug('Steering: initialize: beginning steering motor position = '+ str(self.steering_motor.position))
-        self.__experimentally_find_max_left_position()
-        logging.debug('Steering: initialize: steering motor position after experimentally turning max left = '+ str(self.steering_motor.position))
-        self.steering_motor.run_to_rel_pos(
-            position_sp=(self.steering_motor_position_factor * self.steering_max_range),
-            speed_sp=self.steering_motor_speed,
-            stop_action='coast'
-        )
-        self.steering_motor.wait_while('running', timeout=1000)
-        self.steering_motor.stop(stop_action='coast')
-        logging.debug('Steering: initialize: ending steering motor position = '+ str(self.steering_motor.position))
+        if (self.find_center_on_initialize):
+            logging.debug('Steering: initialize: beginning steering motor position = '+ str(self.steering_motor.position))
+            self.__experimentally_find_max_left_position()
+            logging.debug('Steering: initialize: steering motor position after experimentally turning max left = '+ str(self.steering_motor.position))
+            self.steering_motor.run_to_rel_pos(
+                position_sp=(self.steering_motor_position_factor * self.steering_max_range),
+                speed_sp=self.steering_motor_speed,
+                stop_action='coast'
+            )
+            self.steering_motor.wait_while('running', timeout=1000)
+            self.steering_motor.stop(stop_action='coast')
+            logging.debug('Steering: initialize: ending steering motor position = '+ str(self.steering_motor.position))
         self.steering_motor.reset()
         logging.debug('Steering: initialize: steering motor position after reset = '+ str(self.steering_motor.position))
 
